@@ -78,12 +78,14 @@ public class Image extends Control {
             mTexture = Assets.manager.get(mFile);
         }
 
-        Matrix4 t = context.batch.getTransformMatrix();
-        Matrix4 t_saved = new Matrix4(t);
-        t.translate(mRotationOrigin.x, -mRotationOrigin.y, 0);
-        t.rotate(0, 0, 1, mAngle);
-        t.translate( - mRotationOrigin.x, (mRotationOrigin.y), 0);
-
+        if(mVisible) {
+            context.batch.setColor(mColor);
+            //mTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+            context.batch.draw(mTexture, 0, Constants.PIPBOY_HEIGHT - mHeight, mWidth, mHeight,
+                    0, 1, mTileH ? mWidth/mTexture.getWidth() : 1,
+                     1 - (mTileV ? mHeight/mTexture.getHeight() : 1));
+        }
+/*
         if(mVisible) {
             context.batch.setColor(mColor);
             if (!mTileH && !mTileV) {
@@ -128,9 +130,7 @@ public class Image extends Control {
                     }
                 }
             }
-        }
-
-        context.batch.setTransformMatrix(t_saved);
+        }*/
 
         super.render(context);
 

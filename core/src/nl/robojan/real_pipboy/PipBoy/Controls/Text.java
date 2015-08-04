@@ -71,7 +71,7 @@ public class Text extends Control {
     public void render(RenderContext context) {
         if(mVisible) {
             context.batch.setColor(mColor);
-            mFont.draw(context.batch, mLayout, mX, Constants.PIPBOY_HEIGHT - mY + mFont.getAscent());
+            mFont.draw(context.batch, mLayout, 0, Constants.PIPBOY_HEIGHT + mFont.getAscent());
         }
 
         super.render(context);

@@ -77,41 +77,40 @@ public class Box extends Control {
             mTexture.setAssetManager(Assets.manager);
         }
 
-
         if(mBottomVisible || mTopVisible || mLeftVisible || mRightVisible) {
             context.batch.setColor(mFillColor);
-            context.batch.draw(mTexture, mX, Constants.PIPBOY_HEIGHT - mY - mHeight, mWidth, mHeight);
+            context.batch.draw(mTexture, 0, Constants.PIPBOY_HEIGHT - mHeight, mWidth, mHeight);
         }
 
         context.batch.setColor(mColor);
         // Top
         if(mTopVisible)
         {
-            context.batch.draw(mTexture, mX, Constants.PIPBOY_HEIGHT - mY - Constants.LINE_THICKNESS,
+            context.batch.draw(mTexture, 0, Constants.PIPBOY_HEIGHT - Constants.LINE_THICKNESS,
                     mWidth, Constants.LINE_THICKNESS);
         }
 
         // Left
         if(mLeftVisible)
         {
-            context.batch.draw(mTexture, mX,
-                    Constants.PIPBOY_HEIGHT - mY - mHeight + Constants.LINE_THICKNESS,
+            context.batch.draw(mTexture, 0,
+                    Constants.PIPBOY_HEIGHT - mHeight + Constants.LINE_THICKNESS,
                     Constants.LINE_THICKNESS, mHeight - 2 * Constants.LINE_THICKNESS);
         }
 
         // Bottom
         if(mBottomVisible)
         {
-            context.batch.draw(mTexture, mX,
-                    Constants.PIPBOY_HEIGHT - mY - mHeight,
+            context.batch.draw(mTexture, 0,
+                    Constants.PIPBOY_HEIGHT - mHeight,
                     mWidth, Constants.LINE_THICKNESS);
         }
 
         // Right
         if(mRightVisible)
         {
-            context.batch.draw(mTexture, mX + mWidth - Constants.LINE_THICKNESS,
-                    Constants.PIPBOY_HEIGHT - mY - mHeight + Constants.LINE_THICKNESS,
+            context.batch.draw(mTexture, mWidth - Constants.LINE_THICKNESS,
+                    Constants.PIPBOY_HEIGHT - mHeight + Constants.LINE_THICKNESS,
                     Constants.LINE_THICKNESS, mHeight - 2 * Constants.LINE_THICKNESS);
         }
 

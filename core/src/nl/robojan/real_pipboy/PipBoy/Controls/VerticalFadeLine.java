@@ -78,16 +78,15 @@ public class VerticalFadeLine extends Control {
                 return;
             }
             mTexture = Assets.manager.get(mSelectedTexture, Texture.class);
-            mTexture.setAssetManager(Assets.manager);
         }
 
         if(mVisible) {
-            float y = mY;
+            float y = 0;
             if (mBottomToTop) {
                 y -= mHeight;
             }
             context.batch.setColor(mColor);
-            context.batch.draw(mTexture, mX, Constants.PIPBOY_HEIGHT - (y + mHeight),
+            context.batch.draw(mTexture, 0, Constants.PIPBOY_HEIGHT - (y + mHeight),
                     Constants.LINE_THICKNESS, mHeight);
         }
         super.render(context);

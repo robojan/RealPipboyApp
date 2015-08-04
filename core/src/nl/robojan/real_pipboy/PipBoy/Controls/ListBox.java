@@ -1,8 +1,8 @@
 package nl.robojan.real_pipboy.PipBoy.Controls;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -370,7 +370,15 @@ public class ListBox extends Control{
                 item.setY(y);
                 y += item.getHeight();
                 if(y > mY && y - item.getHeight() < mY + mHeight) {
+                    Matrix4 t = context.batch.getTransformMatrix();
+                    Matrix4 t_saved = new Matrix4(t);
+                    t.translate(item.getOrigin().x, -item.getOrigin().y, 0);
+                    t.rotate(0, 0, 1, item.getAngle());
+                    t.translate(item.getX() - item.getOrigin().x,
+                            -(item.getY() - item.getOrigin().y), 0);
+                    context.batch.setTransformMatrix(t);
                     item.render(context);
+                    context.batch.setTransformMatrix(t_saved);
                 }
                 if(i == mSelectedItem) {
                     mHighlightBox.setY(y - item.getHeight());

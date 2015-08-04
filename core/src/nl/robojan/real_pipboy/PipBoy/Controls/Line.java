@@ -69,12 +69,9 @@ public class Line extends Control {
             mTexture = Assets.manager.get(TEXTURE_FILE, Texture.class);
             mTexture.setAssetManager(Assets.manager);
         }
-        Rectangle rect = getSize();
-
         if(mVisible) {
             context.batch.setColor(mColor);
-            context.batch.draw(mTexture, rect.x, Constants.PIPBOY_HEIGHT - rect.y, rect.width,
-                    rect.height);
+            context.batch.draw(mTexture, 0, Constants.PIPBOY_HEIGHT, getWidth(), getHeight());
         }
 
         super.render(context);

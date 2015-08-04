@@ -27,7 +27,7 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
             new Array<ClickableListenerItem>(2);
     protected Sound mClickSound = null;
     protected String mClickSoundFile = null;
-    protected Vector2 mRotationOrigin = new Vector2();
+    protected Vector2 mOrigin = new Vector2();
     protected float mAngle = 0;
 
     protected boolean mClips = false;
@@ -36,7 +36,7 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
         mChilds = new Array<Control>(4);
         mX = x;
         mY = y;
-        mRotationOrigin = new Vector2(x, y);
+        mOrigin = new Vector2(x, y);
     }
 
     @Override
@@ -69,8 +69,8 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
     private void setClippingRectangle(RenderContext context, Rectangle rect) {
         context.batch.flush();
         context.pipboyShaderProgram.begin();
-        Vector3 TL = new Vector3(rect.getX(), Constants.PIPBOY_HEIGHT - rect.getY(), 0);
-        Vector3 BR = new Vector3(rect.getX() + rect.getWidth(), TL.y - rect.getHeight(), 0);
+        Vector3 TL = new Vector3(0, Constants.PIPBOY_HEIGHT, 0);
+        Vector3 BR = new Vector3(rect.getWidth(), TL.y - rect.getHeight(), 0);
         Matrix4 projTran = new Matrix4(context.batch.getProjectionMatrix());
         projTran.mul(context.batch.getTransformMatrix());
         TL.mul(projTran).add(1, 1, 0).scl(0.5f * context.screenWidth, 0.5f * context.screenHeight, 0);
@@ -97,14 +97,15 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
     }
 
     public void render(RenderContext context){
-        Matrix4 t = context.batch.getTransformMatrix();
-        Matrix4 t_saved = new Matrix4(t);
-        t.translate(mRotationOrigin.x, -mRotationOrigin.y, 0);
-        t.rotate(0, 0, 1, mAngle);
-        t.translate(mX - mRotationOrigin.x, -(mY - mRotationOrigin.y), 0);
-        context.batch.setTransformMatrix(t);
         for(Control child : mChilds)
         {
+            Matrix4 t = context.batch.getTransformMatrix();
+            Matrix4 t_saved = new Matrix4(t);
+            t.translate(child.getOrigin().x, -child.getOrigin().y, 0);
+            t.rotateRad(0, 0, 1, child.getAngle());
+            t.translate(child.getX(),
+                    -(child.getY()), 0);
+            context.batch.setTransformMatrix(t);
             if(child.isClipping()) {
                 setClippingRectangle(context, child.getSize());
             }
@@ -112,8 +113,8 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
             if(child.isClipping()) {
                 removeClippingRectangle(context);
             }
+            context.batch.setTransformMatrix(t_saved);
         }
-        context.batch.setTransformMatrix(t_saved);
     }
 
     public void setClipping(boolean clips) {
@@ -497,11 +498,11 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
         mAngle = angle;
     }
 
-    public Vector2 getRotationOrigin() {
-        return mRotationOrigin;
+    public Vector2 getOrigin() {
+        return mOrigin;
     }
 
-    public void setRotationOrigin(Vector2 rotationOrigin) {
-        mRotationOrigin = rotationOrigin;
+    public void setOrigin(Vector2 origin) {
+        mOrigin = origin;
     }
 }
