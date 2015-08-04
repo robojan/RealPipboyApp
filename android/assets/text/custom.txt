@@ -1,0 +1,16 @@
+sRJOptions = OPTIONS
+sRJOptionConn = Connection
+sRJOptionGraphics = Graphics
+sRJOptionSound = Sound
+sRJCONNAbbrev = STATUS
+sRJConnected = Connected
+sRJDisconnected = Disconnected
+sRJConnecting = Connecting...
+sRJConnFailure = Disconnected
+sRJConnect = Connect
+SRJDisconnect = Disconnect
+sRJHostAddr = Host address
+sRJHostAddrHint =
+sRJHostPort = Host port
+sRJHostPortHint = Port number
+sRJWifi = WiFi
