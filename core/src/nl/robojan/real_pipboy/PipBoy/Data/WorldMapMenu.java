@@ -1,7 +1,9 @@
 package nl.robojan.real_pipboy.PipBoy.Data;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import nl.robojan.real_pipboy.Context;
@@ -9,8 +11,11 @@ import nl.robojan.real_pipboy.FalloutData.IFalloutData;
 import nl.robojan.real_pipboy.FalloutData.MapMarker;
 import nl.robojan.real_pipboy.FalloutData.MapMarkerList;
 import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.Image;
 import nl.robojan.real_pipboy.PipBoy.Controls.Rect;
+import nl.robojan.real_pipboy.PipBoy.Controls.Text;
+import nl.robojan.real_pipboy.PipBoy.Controls.TextBox;
 import nl.robojan.real_pipboy.RenderContext;
 import nl.robojan.real_pipboy.util.GameFileResolver;
 
@@ -30,6 +35,8 @@ public class WorldMapMenu extends Rect {
     private Vector2 mMapSize = new Vector2(2048, 2048);
     private float mMagnification = 0.5f;
     private float mMapScale = 1.0f;
+    private float mMinMag = 0.1f;
+    private float mMaxMag = 5f;
 
     private Image mPlayerIndicator;
 
@@ -46,6 +53,12 @@ public class WorldMapMenu extends Rect {
     private float mPlayerAngle = 0;
     private MapMarkerList mMapMarkers = new MapMarkerList();
     private Array<MapMarkerIcon> mMapMarkersImage = new Array<MapMarkerIcon>();
+    private MapMarkerIcon mSelectedMarker = null;
+    private MapHighlightBox mHighlightBox;
+
+    private boolean mPanning = false;
+    private Vector2 mOldMapPos= new Vector2();
+    private Vector2 mOldMapSize= new Vector2();
 
     private boolean mVisible = true;
 
@@ -56,15 +69,30 @@ public class WorldMapMenu extends Rect {
 
         mMap = new Image(-256,-256,mMapTexture, mMapSize.x * mMagnification,
                 mMapSize.y * mMagnification);
+        mMinMag = mWidth / (mMapDimensions.x * 0.8f);
+        mMaxMag = 5.0f;
         addChild(mMap);
 
         mPlayerIndicator = new Image(0.5f * mMap.getWidth(), 0.5f * mMap.getHeight(),
                 PLAYER_INDICATOR, 48, 48*2);
         mMap.addChild(mPlayerIndicator);
 
-
+        mHighlightBox = new MapHighlightBox(348, 170, 160, 160);
+        mMap.addChild(mHighlightBox);
+        mHighlightBox.setVisible(false);
 
         calculateMapPositions();
+    }
+
+    public void setSelectedMarker(MapMarkerIcon marker) {
+        mSelectedMarker = marker;
+        if(marker == null) {
+            mHighlightBox.setVisible(false);
+        } else {
+            mHighlightBox.setVisible(true);
+            mHighlightBox.setPos(marker.getPos());
+            mHighlightBox.setText(marker.getMarker().getName());
+        }
     }
 
     public void centerAroundPlayer() {
@@ -78,6 +106,7 @@ public class WorldMapMenu extends Rect {
         mVisible = visible;
         mMap.setVisible(visible);
         mPlayerIndicator.setVisible(visible);
+        mHighlightBox.setVisible(visible && mSelectedMarker != null);
         for(MapMarkerIcon icon : mMapMarkersImage) {
             icon.setVisible(visible);
         }
@@ -131,6 +160,8 @@ public class WorldMapMenu extends Rect {
             if(!texture.equals(mMapTexture)) {
                 mMapTexture = texture;
                 mMap.setFile(GameFileResolver.combineWithFallback(mMapTexture, Constants.FNF_IMAGE));
+                mMinMag = mWidth / (mapDim.x * 0.8f);
+                mMaxMag = 5.0f;
                 mMap.setWidth(mapDim.x * mMagnification);
                 mMap.setHeight(mapDim.y * mMagnification);
             }
@@ -154,11 +185,25 @@ public class WorldMapMenu extends Rect {
 
             removeAllMapMarkers();
 
+            boolean foundSelected = false;
             for(MapMarker marker : mMapMarkers.markers) {
-                MapMarkerIcon markerImage = new MapMarkerIcon(0,0, 32, 32, marker);
+                MapMarkerIcon markerImage = new MapMarkerIcon(0,0, 48, 48, marker);
+                markerImage.setVisible(mVisible);
                 mMapMarkersImage.add(markerImage);
                 mMap.addChild(markerImage, true);
+                if(mSelectedMarker != null &&
+                        marker.getName().equals(mSelectedMarker.getMarker().getName())) {
+                    foundSelected = true;
+                    mSelectedMarker = markerImage;
+                }
             }
+            if(!foundSelected) {
+                setSelectedMarker(null);
+            }
+        }
+
+        if(mSelectedMarker != null) {
+            mHighlightBox.setPos(mSelectedMarker.getPos());
         }
     }
 
@@ -170,7 +215,172 @@ public class WorldMapMenu extends Rect {
         mMapMarkersImage.clear();
     }
 
-    private class MapMarkerIcon extends Image{
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        mOldMapPos = mMap.getPos();
+        mOldMapSize = new Vector2(mMap.getWidth(), mMap.getHeight());
+        return super.touchDown(x, y, pointer, button);
+    }
+
+    @Override
+    public boolean pinch(Vector2 ip1, Vector2 ip2, Vector2 p1, Vector2 p2) {
+        boolean handled = super.pinch(ip1, ip2, p1, p2);
+        if(!handled && getSize().contains(ip1) && getSize().contains(ip2)) {
+            handled = true;
+
+            float id = new Vector2(ip1).sub(ip2).len();
+            float d = new Vector2(p1).sub(p2).len();
+            float zoom = d/id;
+
+            mMagnification = mOldMapSize.x * zoom / mMapDimensions.x;
+            if(mMagnification < mMinMag) {
+                mMagnification = mMinMag;
+            }
+            if(mMagnification > mMaxMag) {
+                mMagnification = mMaxMag;
+            }
+
+            mMap.setWidth(mMapDimensions.x * mMagnification);
+            mMap.setHeight(mMapDimensions.y * mMagnification);
+            zoom = mMagnification * mMapDimensions.x / mOldMapSize.x;
+
+            float newX = (ip1.x - mOldMapPos.x) * zoom;
+            float newY = (ip1.y - mOldMapPos.y) * zoom;
+            float mapX = p1.x - newX;
+            float mapY = p1.y - newY;
+
+            mMap.setX(mapX);
+            mMap.setY(mapY);
+            calculateMapPositions();
+        }
+        return handled;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        boolean handled = super.pan(x, y, deltaX, deltaY);
+        if(!handled && getSize().contains(x,y)) {
+            mPanning = true;
+            handled = true;
+        }
+        if(mPanning) {
+            float mapx = mMap.getX() + deltaX;
+            float mapy = mMap.getY() + deltaY;
+
+            if(mapx < -mMap.getWidth() - 100 + getWidth()) {
+                mapx = -mMap.getWidth() - 100 + getWidth();
+            }
+            if(mapx > 100) {
+                mapx = 100;
+            }
+
+            if(mapy < -mMap.getHeight() - 100 + getHeight()) {
+                mapy = -mMap.getHeight() - 100 + getHeight();
+            }
+            if(mapy > 100) {
+                mapy = 100;
+            }
+
+            mMap.setX(mapx);
+            mMap.setY(mapy);
+        }
+        return handled;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        mPanning = false;
+        return super.panStop(x, y, pointer, button);
+    }
+
+    private class MapHighlightBox extends Rect {
+        private static final String SOLID = "textures/interface/shared/solid.dds";
+        private static final String FADE_TO_RIGHT = "textures/interface/shared/line/fade_to_right.dds";
+        private static final String FADE_TO_LEFT = "textures/interface/shared/line/fade_to_left.dds";
+        private static final String FADE_TO_UP = "textures/interface/shared/line/fade_to_top.dds";
+        private static final String FADE_TO_DOWN = "textures/interface/shared/line/fade_to_bottom.dds";
+
+        private TextBox mLocationName;
+        private Image mULHoriz, mULVert, mURHoriz, mURVert, mLLHoriz, mLLVert, mLRHoriz, mLRVert;
+        private Image mULHorizTip, mULVertTip, mURHorizTip, mURVertTip, mLLHorizTip, mLLVertTip,
+            mLRHorizTip, mLRVertTip;
+
+        public MapHighlightBox(float x, float y, float width, float height) {
+            super(x, y, width, height);
+
+            setOrigin(new Vector2(width/2, height/2));
+
+            mLocationName = new TextBox(80, 180, "", Align.center);
+            mLocationName.setFontIndex(1);
+            addChild(mLocationName);
+
+            mULHoriz = new Image(0, 0, SOLID, 40, Constants.LINE_THICKNESS);
+            mULHorizTip = new Image(40, 0, FADE_TO_RIGHT, 15, Constants.LINE_THICKNESS);
+            mULHoriz.addChild(mULHorizTip);
+            addChild(mULHoriz);
+            mULVert = new Image(0, 0, SOLID, Constants.LINE_THICKNESS, 40);
+            mULVertTip = new Image(0, 40, FADE_TO_DOWN, Constants.LINE_THICKNESS, 15);
+            mULVert.addChild(mULVertTip);
+            addChild(mULVert);
+            mURHoriz = new Image(120, 0, SOLID, 40, Constants.LINE_THICKNESS);
+            mURHorizTip = new Image(-15, 0, FADE_TO_LEFT, 15, Constants.LINE_THICKNESS);
+            mURHoriz.addChild(mURHorizTip);
+            addChild(mURHoriz);
+            mURVert = new Image(160 - Constants.LINE_THICKNESS, 0, SOLID,
+                    Constants.LINE_THICKNESS, 40);
+            mURVertTip = new Image(0, 40, FADE_TO_DOWN, Constants.LINE_THICKNESS, 15);
+            mURVert.addChild(mURVertTip);
+            addChild(mURVert);
+            mLLHoriz = new Image(0, 160 - Constants.LINE_THICKNESS, SOLID, 40,
+                    Constants.LINE_THICKNESS);
+            mLLHorizTip = new Image(40, 0, FADE_TO_RIGHT, 15, Constants.LINE_THICKNESS);
+            mLLHoriz.addChild(mLLHorizTip);
+            addChild(mLLHoriz);
+            mLLVert = new Image(0, 120, SOLID, Constants.LINE_THICKNESS, 40);
+            mLLVertTip = new Image(0, -15, FADE_TO_UP, Constants.LINE_THICKNESS, 15);
+            mLLVert.addChild(mLLVertTip);
+            addChild(mLLVert);
+            mLRHoriz = new Image(120, 160 - Constants.LINE_THICKNESS, SOLID, 40,
+                    Constants.LINE_THICKNESS);
+            mLRHorizTip = new Image(-15, 0, FADE_TO_LEFT, 15, Constants.LINE_THICKNESS);
+            mLRHoriz.addChild(mLRHorizTip);
+            addChild(mLRHoriz);
+            mLRVert = new Image(160 - Constants.LINE_THICKNESS, 120, SOLID,
+                    Constants.LINE_THICKNESS, 40);
+            mLRVertTip = new Image(0, -15, FADE_TO_UP, Constants.LINE_THICKNESS, 15);
+            mLRVert.addChild(mLRVertTip);
+            addChild(mLRVert);
+        }
+
+        public void setText(String location) {
+            mLocationName.setText(location);
+        }
+
+        public void setVisible(boolean visible) {
+            mLocationName.setVisible(visible);
+            mURHoriz.setVisible(visible);
+            mURHorizTip.setVisible(visible);
+            mURVert.setVisible(visible);
+            mURVertTip.setVisible(visible);
+            mULHoriz.setVisible(visible);
+            mULHorizTip.setVisible(visible);
+            mULVert.setVisible(visible);
+            mULVertTip.setVisible(visible);
+            mLRHoriz.setVisible(visible);
+            mLRHorizTip.setVisible(visible);
+            mLRVert.setVisible(visible);
+            mLRVertTip.setVisible(visible);
+            mLLHoriz.setVisible(visible);
+            mLLHorizTip.setVisible(visible);
+            mLLVert.setVisible(visible);
+            mLLVertTip.setVisible(visible);
+        }
+        public boolean isVisible() {
+            return mURHoriz.getVisible();
+        }
+    }
+
+    private class MapMarkerIcon extends Image implements ClickableListener{
         private MapMarker mMarker;
         private float mXOffset, mYOffset;
 
@@ -182,6 +392,7 @@ public class WorldMapMenu extends Rect {
             mMarker = marker;
             setOrigin(new Vector2(width/2, height/2));
             setVisible(marker.isVisible());
+            addClickableListener(this);
             updatePositionAndScale();
         }
 
@@ -191,9 +402,62 @@ public class WorldMapMenu extends Rect {
             setPos(pos);
         }
 
+        public void setSelected(boolean selected) {
+            if(selected) {
+                setWidth(72);
+                setHeight(72);
+                setOrigin(new Vector2(36, 36));
+            } else {
+                setWidth(48);
+                setHeight(48);
+                setOrigin(new Vector2(24, 24));
+            }
+        }
+
+        @Override
+        public void onClickableEvent(Control source, Object user) {
+            if(!isVisible() || !isEnabled()) {
+                return;
+            }
+            if(mSelectedMarker != null) {
+                mSelectedMarker.setSelected(false);
+                if(mSelectedMarker == this) {
+                    setSelectedMarker(null);
+                    return;
+                }
+            }
+            setSelectedMarker(this);
+            setSelected(true);
+        }
+
         @Override
         public void setVisible(boolean visible) {
             super.setVisible(visible && mMarker.isVisible());
         }
+
+        public MapMarker getMarker() {
+            return mMarker;
+        }
+
+        public void setMarker(MapMarker marker) {
+            mMarker = marker;
+        }
+
+        public float getXOffset() {
+            return mXOffset;
+        }
+
+        public void setXOffset(float XOffset) {
+            mXOffset = XOffset;
+        }
+
+        public float getYOffset() {
+            return mYOffset;
+        }
+
+        public void setYOffset(float YOffset) {
+            mYOffset = YOffset;
+        }
+
     }
 }

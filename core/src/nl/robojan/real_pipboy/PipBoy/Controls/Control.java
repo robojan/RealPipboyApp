@@ -307,6 +307,13 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
     public boolean tap(float x, float y, int count, int button) {
         boolean fired = false;
 
+        if(isClipping() && !getSize().contains(x,y)) {
+            return fired;
+        }
+
+        x += mOrigin.x;
+        y += mOrigin.y;
+
         if(isEnabled() && getSize().contains(x, y)){
             fired = fireClickableEvent();
             playClickSound();
@@ -390,7 +397,11 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
                          Vector2 pointer2) {
         for(Control child : mChilds)
         {
-            if(child.pinch(initialPointer1, initialPointer2, pointer1, pointer2))
+            Vector2 ip1 = new Vector2(initialPointer1).add(-child.getX(), -child.getY());
+            Vector2 ip2 = new Vector2(initialPointer2).add(-child.getX(), -child.getY());
+            Vector2 p1 = new Vector2(pointer1).add(-child.getX(), -child.getY());
+            Vector2 p2 = new Vector2(pointer2).add(-child.getX(), -child.getY());
+            if(child.pinch(ip1, ip2, p1, p2))
                 return true;
         }
         return false;

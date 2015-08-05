@@ -98,6 +98,8 @@ public class DataMenu extends Control {
             mWaveformRect = new WaveformRect(500, 125, 350, 350);
 
             mWorldMap = new WorldMapMenu(0, 50, 855, 500);
+            mWorldMap.setVisible(false);
+            mWorldMap.setEnabled(false);
             addChild(mWorldMap);
 
             float buttonY = mQuestsList.getY();

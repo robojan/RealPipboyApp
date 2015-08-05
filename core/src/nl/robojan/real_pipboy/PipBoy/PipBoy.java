@@ -151,10 +151,18 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
         return mPages[mCurrentPage];
     }
 
+    private Vector2 mapInputToPipboy(Vector2 vec) {
+        return mapInputToPipboy(vec.x, vec.y);
+    }
+
     private Vector2 mapInputToPipboy(float x, float y) {
         x = x/Gdx.graphics.getWidth() * DISPLAY_WIDTH;
         y = y/Gdx.graphics.getHeight() * DISPLAY_HEIGHT;
         return new Vector2(x,y);
+    }
+
+    private Vector2 mapInputVelocityToPipboy(Vector2 vec) {
+        return mapInputVelocityToPipboy(vec.x, vec.y);
     }
 
     private Vector2 mapInputVelocityToPipboy(float x, float y) {
@@ -254,15 +262,14 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1,
                          Vector2 pointer2) {
-        Vector2 scale = mapInputVelocityToPipboy(1, 1);
-        initialPointer1.scl(scale);
-        initialPointer2.scl(scale);
-        pointer1.scl(scale);
-        pointer2.scl(scale);
+        Vector2 ip1 = mapInputToPipboy(initialPointer1);
+        Vector2 ip2 = mapInputToPipboy(initialPointer2);
+        Vector2 p1 = mapInputToPipboy(pointer1);
+        Vector2 p2 = mapInputToPipboy(pointer2);
         Gdx.app.debug("EVT", String.format("Pinch event: IP1:%s, IP2:%s, P1:%s, P2:%s",
-                initialPointer1.toString(), initialPointer2.toString(), pointer1.toString(),
-                pointer2.toString()));
-        return getSelectedMenu().pinch(initialPointer1, initialPointer2, pointer1, pointer2);
+                ip1.toString(), ip2.toString(), p1.toString(),
+                p2.toString()));
+        return getSelectedMenu().pinch(ip1, ip2, p1, p2);
     }
 
     @Override
