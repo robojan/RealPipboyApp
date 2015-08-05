@@ -1,7 +1,6 @@
 package nl.robojan.real_pipboy.Connection.Packets;
 
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
@@ -38,9 +37,9 @@ public class SendFileDataPacket extends DataPacket {
 
     private void readData(byte[] data, int offset, int len) {
         ByteBuffer buffer = ByteBuffer.wrap(data, offset, len);
-        Charset charset = Charset.forName("ISO-8859-1");
 
         mId = buffer.get();
+        //noinspection PointlessBitwiseExpression
         mOffset = ((long)buffer.getInt()) & 0xFFFFFFFF;
         mChunkIdx = buffer.getInt();
         mData = new byte[mHeader.getDataSize() - 9];
@@ -55,7 +54,6 @@ public class SendFileDataPacket extends DataPacket {
     @Override
     public byte[] getBytes() {
         ByteBuffer buffer = ByteBuffer.allocate(getSize());
-        CharsetEncoder enc = Charset.forName("ISO-8859-1").newEncoder();
         mHeader.fillBytebuffer(buffer);
         buffer.put(mId);
         buffer.putInt((int)mOffset);

@@ -260,7 +260,7 @@ public class ListBox extends Control{
                 ListBoxItem item = mItems.get(i);
                 if(item.getTop() >= 0 - item.getHeight()/2 &&
                         item.getTop() <= mHeight - item.getHeight()/2) {
-                    handled |= item.tap(x, y, count, button);
+                    handled = item.tap(x, y, count, button);
                     if (handled)
                         break;
                 }

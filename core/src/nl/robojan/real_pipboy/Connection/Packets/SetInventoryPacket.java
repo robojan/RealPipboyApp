@@ -75,11 +75,11 @@ public class SetInventoryPacket extends DataPacket {
             buffer.position(buffer.position() + nameLen);
             short iconLen = buffer.getShort();
             if(iconLen > 0)
-                icon = new String(data, buffer.position(), iconLen, charset).replace('\\', '/');;
+                icon = new String(data, buffer.position(), iconLen, charset).replace('\\', '/');
             buffer.position(buffer.position() + iconLen);
             short badgeLen = buffer.getShort();
             if(badgeLen > 0)
-                badge = new String(data, buffer.position(), badgeLen, charset).replace('\\', '/');;
+                badge = new String(data, buffer.position(), badgeLen, charset).replace('\\', '/');
             buffer.position(buffer.position() + badgeLen);
             short effectsLen = buffer.getShort();
             if(effectsLen > 0)
@@ -89,7 +89,7 @@ public class SetInventoryPacket extends DataPacket {
             boolean equippable = (flags & ITEM_FLAG_EQUIPPABLE) != 0;
             boolean equipped = (flags & ITEM_FLAG_EQUIPPED) != 0;
 
-            short detailLen = buffer.getShort();
+            buffer.getShort();
 
             float dps, dam, cnd, dr, dt;
             int strReq;

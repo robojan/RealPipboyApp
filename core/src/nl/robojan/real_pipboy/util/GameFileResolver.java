@@ -2,9 +2,7 @@ package nl.robojan.real_pipboy.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.util.HashMap;
 
@@ -116,7 +114,6 @@ public class GameFileResolver implements FileHandleResolver {
 
         // If possible download from server
         if(mDownloadFromPC && ConnectionManager.getInstance().isConnected()) {
-            // Todo: download from PC
             FileTransferHandler fth = FileTransferHandler.getInstance();
             String modification = getExtensionModification(normalName);
             result = fth.getFileSync(normalName, modification == null);

@@ -53,7 +53,7 @@ public class DataPacketHeader {
     }
 
     public static boolean isValidHeader(byte[] buffer, int offset, int len) {
-        return len >= getHeaderSize() && buffer[offset + 0] == 'R' && buffer[offset + 1] == 'P';
+        return len >= getHeaderSize() && buffer[offset] == 'R' && buffer[offset + 1] == 'P';
     }
 
     private void readHeader(byte[] buffer, int offset, int len) {

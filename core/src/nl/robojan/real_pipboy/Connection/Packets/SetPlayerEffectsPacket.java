@@ -49,13 +49,13 @@ public class SetPlayerEffectsPacket extends DataPacket {
         Charset charset = Charset.forName("ISO-8859-1");
         ByteBuffer buffer = ByteBuffer.wrap(data, offset, len);
         // Read effects
-        mRadEffects = new Array();
+        mRadEffects = new Array<Effect>();
         readEffects(mRadEffects, buffer, charset);
-        mH2oEffects = new Array();
+        mH2oEffects = new Array<Effect>();
         readEffects(mH2oEffects, buffer, charset);
-        mFodEffects = new Array();
+        mFodEffects = new Array<Effect>();
         readEffects(mFodEffects, buffer, charset);
-        mSlpEffects = new Array();
+        mSlpEffects = new Array<Effect>();
         readEffects(mSlpEffects, buffer, charset);
         // Read player effects
         mPlayerEffects = new StatusEffects();

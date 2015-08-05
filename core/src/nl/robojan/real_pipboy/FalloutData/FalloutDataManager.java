@@ -121,12 +121,7 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
     }
 
     @Override
-    public void update(Context context) {
-        ConnectionManager conn = ConnectionManager.getInstance();
-        if(conn.getTCPStatus() != ConnectionManager.TCPStatus.Connected) {
-            return;
-        }
-    }
+    public void update(Context context) {}
 
     private void setPlayerInfo(SetPlayerInfoPacket packet) {
         mPlayerName = packet.getPlayerName();

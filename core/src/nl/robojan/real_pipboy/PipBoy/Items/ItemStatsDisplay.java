@@ -223,7 +223,6 @@ public class ItemStatsDisplay extends Control {
 
     @Override
     public void update(Context context) {
-        IFalloutData data = context.foData;
         // update the animation
         updateFadeAnim();
         if(mDoFading) {

@@ -25,6 +25,7 @@ public class FalloutFontHeader {
         byte[] imageFileNameBytes = new byte[IMAGEFILENAME_LENGTH];
         is.readFully(imageFileNameBytes, 0, IMAGEFILENAME_LENGTH );
         int len;
+        //noinspection StatementWithEmptyBody
         for(len = 0; len < imageFileNameBytes.length && imageFileNameBytes[len] != 0; len++);
         imageFileName = new String(imageFileNameBytes, 0, len);
     }

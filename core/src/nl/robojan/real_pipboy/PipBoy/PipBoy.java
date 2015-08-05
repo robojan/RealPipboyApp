@@ -3,7 +3,6 @@ package nl.robojan.real_pipboy.PipBoy;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.input.GestureDetector;
@@ -11,10 +10,7 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-
-import org.w3c.dom.css.Rect;
 
 import nl.robojan.real_pipboy.Assets;
 import nl.robojan.real_pipboy.Context;
@@ -44,6 +40,8 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
     private Texture mTexBackground;
     private Matrix4 mProjectionMatrix;
     private InputMultiplexer mInputMultiplexer;
+
+    private int mLastRendercalls = 0;
 
     public PipBoy() {
         mInputMultiplexer = new InputMultiplexer();
@@ -141,6 +139,11 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
         getSelectedMenu().render(context);
 
         context.batch.end();
+        if(mLastRendercalls != context.batch.renderCalls) {
+            Gdx.app.error("RENDER", "Rendercalls: " + context.batch.renderCalls + "fps: " + Gdx.graphics.getFramesPerSecond());
+            mLastRendercalls = context.batch.renderCalls;
+        }
+
         if(context.clippingRectangles.size() > 0) {
             Gdx.app.error("RENDER", "ClippingRectangleStack is not empty!");
         }

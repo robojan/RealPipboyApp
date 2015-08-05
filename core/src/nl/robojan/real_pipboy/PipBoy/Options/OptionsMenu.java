@@ -52,7 +52,6 @@ public class OptionsMenu extends Control {
 
     @Override
     public void update(Context context) {
-        IFalloutData data = context.foData;
         if(MM_Tabline.getCurrentTab() != mCurrentTab) {
             removeChild(mOptionPages[mCurrentTab]);
             mCurrentTab = MM_Tabline.getCurrentTab();

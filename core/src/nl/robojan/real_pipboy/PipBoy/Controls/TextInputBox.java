@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 
-import nl.robojan.real_pipboy.util.StringUtil;
-
 /**
  * Created by s120330 on 16-7-2015.
  */

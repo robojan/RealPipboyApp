@@ -23,7 +23,7 @@ public class StatusList {
         boolean equals = items.size == list.items.size;
         if(equals) {
             for(int i = 0; i < items.size && equals; i++){
-                equals &= items.get(i).equivalent(list.items.get(i));
+                equals = items.get(i).equivalent(list.items.get(i));
             }
         }
         return equals;

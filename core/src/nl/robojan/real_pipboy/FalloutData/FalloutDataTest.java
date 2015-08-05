@@ -421,9 +421,7 @@ public class FalloutDataTest implements IFalloutData {
 
     @Override
     public QuestList getQuests() {
-        QuestList list = new QuestList();
-
-        return list;
+        return new QuestList();
     }
 
     @Override

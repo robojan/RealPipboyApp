@@ -8,7 +8,7 @@ public class StringUtil {
     {
         try
         {
-            int i = Integer.parseInt(str);
+            Integer.parseInt(str);
         }
         catch(NumberFormatException nfe)
         {
@@ -21,7 +21,7 @@ public class StringUtil {
     {
         try
         {
-            double d = Double.parseDouble(str);
+            Double.parseDouble(str);
         }
         catch(NumberFormatException nfe)
         {

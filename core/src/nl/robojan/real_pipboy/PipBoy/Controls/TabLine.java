@@ -58,7 +58,7 @@ public class TabLine extends Control {
             button.setY(button.getHeight() / -2);
             button.setX(buttonX);
             buttonX += button.getWidth();
-            button.addClickableListener(mButtonsListener, new Integer(i));
+            button.addClickableListener(mButtonsListener, i);
             button.setClickSound("sound/fx/ui/menu/ui_menu_ok.wav");
             addChild(button);
         }
@@ -74,7 +74,7 @@ public class TabLine extends Control {
         public void onClickableEvent(Control source, Object user) {
             if(source.getClass() != TabButton.class || user.getClass() != Integer.class)
                 return;
-            setCurrentTab(((Integer)user).intValue());
+            setCurrentTab(((Integer)user));
         }
     };
 

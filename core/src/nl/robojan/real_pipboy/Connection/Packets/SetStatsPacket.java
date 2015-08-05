@@ -1,6 +1,5 @@
 package nl.robojan.real_pipboy.Connection.Packets;
 
-import java.io.InvalidObjectException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;

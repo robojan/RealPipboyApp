@@ -13,7 +13,7 @@ import nl.robojan.real_pipboy.Context;
  * Created by s120330 on 19-7-2015.
  */
 public interface IFalloutData extends Disposable{
-    public enum Limb {
+    enum Limb {
         HEAD,
         TORSO,
         LEFT_ARM,

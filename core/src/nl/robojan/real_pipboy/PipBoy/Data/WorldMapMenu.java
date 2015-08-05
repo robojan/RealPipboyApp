@@ -1,6 +1,5 @@
 package nl.robojan.real_pipboy.PipBoy.Data;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
@@ -14,9 +13,7 @@ import nl.robojan.real_pipboy.PipBoy.Constants;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.Image;
 import nl.robojan.real_pipboy.PipBoy.Controls.Rect;
-import nl.robojan.real_pipboy.PipBoy.Controls.Text;
 import nl.robojan.real_pipboy.PipBoy.Controls.TextBox;
-import nl.robojan.real_pipboy.RenderContext;
 import nl.robojan.real_pipboy.util.GameFileResolver;
 
 /**

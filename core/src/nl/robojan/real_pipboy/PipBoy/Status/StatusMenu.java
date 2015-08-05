@@ -366,7 +366,7 @@ public class StatusMenu extends Control {
                 StatsItem item = new StatsItem(0,0, stats_special_container.getWidth(),
                         info.name, info.level, info.extra);
                 item.setRightBuffer(list.hasEffect ? 20 + 35 : 20);
-                item.addClickableListener(onSPECIALClick, new Integer(i));
+                item.addClickableListener(onSPECIALClick, i);
                 item.setClickSound("sound/fx/ui/pipboy/ui_pipboy_scroll.wav");
                 stats_special_container.addItem(item);
             }
@@ -385,7 +385,7 @@ public class StatusMenu extends Control {
                 StatsItem item = new StatsItem(0,0, stats_skills_container.getWidth(),
                         info.name, info.level, info.extra);
                 item.setRightBuffer(list.hasEffect ? 20 + 35 : 20);
-                item.addClickableListener(onSkillsClick, new Integer(i));
+                item.addClickableListener(onSkillsClick, i);
                 item.setClickSound("sound/fx/ui/pipboy/ui_pipboy_scroll.wav");
                 stats_skills_container.addItem(item);
             }
@@ -404,7 +404,7 @@ public class StatusMenu extends Control {
                 StatsItem item = new StatsItem(0,0, stats_perks_container.getWidth(),
                         info.name, info.level, info.extra);
                 item.setRightBuffer(list.hasEffect ? 20 + 35 : 20);
-                item.addClickableListener(onPerksClick, new Integer(i));
+                item.addClickableListener(onPerksClick, i);
                 item.setClickSound("sound/fx/ui/pipboy/ui_pipboy_scroll.wav");
                 stats_perks_container.addItem(item);
             }
@@ -467,7 +467,7 @@ public class StatusMenu extends Control {
         public void onClickableEvent(Control source, Object user) {
             if(user.getClass() != Integer.class || source.getClass() != StatsItem.class)
                 return;
-            int index = ((Integer)user).intValue();
+            int index = ((Integer)user);
             setSelectedSPECIALItem(index);
         }
     };
@@ -477,7 +477,7 @@ public class StatusMenu extends Control {
         public void onClickableEvent(Control source, Object user) {
             if(user.getClass() != Integer.class || source.getClass() != StatsItem.class)
                 return;
-            int index = ((Integer)user).intValue();
+            int index = ((Integer)user);
             setSelectedSkillItem(index);
         }
     };
@@ -487,7 +487,7 @@ public class StatusMenu extends Control {
         public void onClickableEvent(Control source, Object user) {
             if(user.getClass() != Integer.class || source.getClass() != StatsItem.class)
                 return;
-            int index = ((Integer)user).intValue();
+            int index = ((Integer)user);
             setSelectedPerkItem(index);
         }
     };

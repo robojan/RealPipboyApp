@@ -4,7 +4,6 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
-import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -41,7 +40,7 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<ShaderProgram,
     @Override
     public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file,
                                                   ShaderProgramParameter parameter) {
-        Array<AssetDescriptor> deps = new Array();
+        Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
         if(parameter == null) {
             deps.add(new AssetDescriptor(fileName + ".vert", String.class));
             deps.add(new AssetDescriptor(fileName + ".frag", String.class));

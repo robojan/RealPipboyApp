@@ -9,8 +9,6 @@ import java.nio.charset.CharsetEncoder;
 
 import nl.robojan.real_pipboy.FalloutData.MapMarker;
 import nl.robojan.real_pipboy.FalloutData.MapMarkerList;
-import nl.robojan.real_pipboy.FalloutData.Note;
-import nl.robojan.real_pipboy.FalloutData.NoteList;
 
 /**
  * Created by s120330 on 28-7-2015.

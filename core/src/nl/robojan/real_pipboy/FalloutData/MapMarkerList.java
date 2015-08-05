@@ -19,7 +19,7 @@ public class MapMarkerList {
         boolean equals = markers.size == other.markers.size;
         if(equals) {
             for(int i = 0; i < markers.size && equals; i++){
-                equals &= markers.get(i).equivalent(other.markers.get(i));
+                equals = markers.get(i).equivalent(other.markers.get(i));
             }
         }
         return equals;

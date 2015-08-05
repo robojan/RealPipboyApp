@@ -3,6 +3,7 @@ package nl.robojan.real_pipboy.PipBoy.Status;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 
+import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.ListBoxItem;
 import nl.robojan.real_pipboy.PipBoy.Controls.Text;
 
@@ -114,13 +115,13 @@ public class StatsItem extends ListBoxItem {
     }
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(Control o) {
+        if(o == null) {
+            throw new NullPointerException();
+        }
         if(!(o instanceof StatsItem)) {
             throw new ClassCastException("Can't compare " + this.getClass().toString() + " to " +
                     o.getClass().toString());
-        }
-        if(o == null) {
-            throw new NullPointerException();
         }
         String str1 = mName.toLowerCase();
         String str2 = ((StatsItem)o).mName.toLowerCase();

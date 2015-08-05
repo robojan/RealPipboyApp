@@ -24,7 +24,7 @@ public class Statistics {
         boolean equals = stats.size == list.stats.size;
         if(equals) {
             for(int i = 0; i < stats.size && equals; i++){
-                equals &= stats.get(i).equivalent(list.stats.get(i));
+                equals = stats.get(i).equivalent(list.stats.get(i));
             }
         }
         return equals;

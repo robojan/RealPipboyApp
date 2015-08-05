@@ -1,11 +1,11 @@
 package nl.robojan.real_pipboy;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -40,6 +40,7 @@ public class RealPipboy extends ApplicationAdapter {
     private long mLastKeepAliveTime = 0;
 
 	private boolean mConnected = false;
+    private boolean mGLStateSet = false;
 
 	private IPacketHandler mOnHelloPacket = new IPacketHandler() {
 		@Override
@@ -87,20 +88,21 @@ public class RealPipboy extends ApplicationAdapter {
 		mRenderContext.context = mContext;
 
 		ConnectionManager.getInstance().registerPacketHandler(
-				PacketTypes.getInstance().getType(HelloPacket.class), mOnHelloPacket);
+                PacketTypes.getInstance().getType(HelloPacket.class), mOnHelloPacket);
 
         FileTransferHandler.getInstance().init();
 
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		//Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
 		mContext.foData = new FalloutDataTest();
 
 		createPostProcessingMesh();
 
 		Assets.manager.load("postProcShader", ShaderProgram.class,
-				new ShaderProgramLoader.ShaderProgramParameter("shaders/post.vert.glsl",
-						"shaders/post.frag.glsl"));
+                new ShaderProgramLoader.ShaderProgramParameter("shaders/post.vert.glsl",
+                        "shaders/post.frag.glsl"));
 		Assets.manager.finishLoadingAsset("postProcShader");
+        Texture.setAssetManager(Assets.manager);
 		mRenderContext.postShaderProgram = Assets.manager.get("postProcShader");
 		if(!mRenderContext.postShaderProgram.isCompiled()){
 			Gdx.app.error("SHADER", "Could not load post processing shader: " +
@@ -114,6 +116,13 @@ public class RealPipboy extends ApplicationAdapter {
 		mPipboy.load();
 		super.resume();
 	}
+
+    public void initRenderState() {
+
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
+
+    }
 
 	public void update() {
 		Assets.update();
@@ -168,6 +177,11 @@ public class RealPipboy extends ApplicationAdapter {
 	public void render () {
 		update();
 
+        if(!mGLStateSet) {
+            initRenderState();
+            mGLStateSet = true;
+        }
+
 		mRenderContext.screenHeight = Gdx.graphics.getHeight();
 		//mRenderContext.screenWidth = Gdx.graphics.getHeight()*1024/768.0f;
 		mRenderContext.screenWidth = Gdx.graphics.getWidth();
@@ -175,7 +189,6 @@ public class RealPipboy extends ApplicationAdapter {
 		// Render in Frame buffer
 		mRenderContext.fbo.begin();
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		mPipboy.render(mRenderContext);
 

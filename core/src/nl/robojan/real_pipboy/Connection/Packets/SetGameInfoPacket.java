@@ -1,9 +1,6 @@
 package nl.robojan.real_pipboy.Connection.Packets;
 
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 
 /**
  * Created by s120330 on 18-7-2015.

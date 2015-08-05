@@ -10,6 +10,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import nl.robojan.real_pipboy.Assets;
 import nl.robojan.real_pipboy.Context;
 import nl.robojan.real_pipboy.PipBoy.Constants;
@@ -18,8 +21,11 @@ import nl.robojan.real_pipboy.RenderContext;
 /**
  * Created by s120330 on 7-7-2015.
  */
-public abstract class Control implements Disposable, InputProcessor, GestureListener {
-    protected Array<Control> mChilds;
+// Note: this class has a natural ordering that is inconsistent with equals.
+public abstract class Control implements Disposable, InputProcessor, GestureListener,
+        Comparable<Control> {
+    protected ArrayList<Control> mChilds = new ArrayList<Control>();
+    protected Control mParent = null;
     protected float mX, mY;
     protected boolean mLoaded = false;
     protected boolean mEnabled = true;
@@ -29,11 +35,11 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
     protected String mClickSoundFile = null;
     protected Vector2 mOrigin = new Vector2();
     protected float mAngle = 0;
+    protected int mDepth = 0;
 
     protected boolean mClips = false;
 
     public Control(float x, float y) {
-        mChilds = new Array<Control>(4);
         mX = x;
         mY = y;
     }
@@ -129,8 +135,41 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
         return mClips;
     }
 
+    @Override
+    // Note: When you override this remember that when the compareTo value changes you need to
+    // remove the child from the parent and add it again
+    public int compareTo(Control o) {
+        if(o == null) {
+            throw new NullPointerException();
+        }
+        return this.getDepth() - o.getDepth();
+    }
+
+    public Control getParent() {
+        return mParent;
+    }
+
+    public void setParent(Control parent) {
+        mParent = parent;
+    }
+
     public boolean containsChild(Control child) {
-        return mChilds.contains(child, true);
+        return mChilds.contains(child);
+    }
+
+    public void sortChildren() {
+        Collections.sort(mChilds);
+    }
+
+    protected void sortParentChildren() {
+        if(mParent != null){
+            mParent.sortChildren();
+        }
+    }
+
+    public void addChild(Control child, boolean doLoad, int depth) {
+        child.mDepth = depth;
+        addChild(child, doLoad);
     }
 
     public void addChild(Control child, boolean doLoad) {
@@ -141,11 +180,13 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
 
     public void addChild(Control child)
     {
+        child.setParent(this);
         mChilds.add(child);
+        sortChildren();
     }
 
     public void removeChild(Control child) {
-        mChilds.removeValue(child, true);
+        mChilds.remove(child);
     }
 
     public void clearChilds() {
@@ -243,12 +284,23 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
         if(mClickSoundFile != null) {
             if(mClickSound == null){
                 if(getClickSoundFromAsset()){
-                    mClickSound.play();
+                    if(mClickSound != null)
+                        mClickSound.play();
                 }
             } else {
                 mClickSound.play();
             }
         }
+    }
+
+    public int getDepth() {
+        return mDepth;
+    }
+
+    // Note: When you override this, remember to resort the child list
+    public void setDepth(int depth) {
+        mDepth = depth;
+        sortChildren();
     }
 
     public void addClickableListener(ClickableListener listener) {
@@ -308,7 +360,7 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
         boolean fired = false;
 
         if(isClipping() && !getSize().contains(x,y)) {
-            return fired;
+            return false;
         }
 
         x += mOrigin.x;

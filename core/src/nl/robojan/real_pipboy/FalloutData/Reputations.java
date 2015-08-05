@@ -24,7 +24,7 @@ public class Reputations {
         boolean equals = reputations.size == list.reputations.size;
         if(equals) {
             for(int i = 0; i < reputations.size && equals; i++){
-                equals &= reputations.get(i).equivalent(list.reputations.get(i));
+                equals = reputations.get(i).equivalent(list.reputations.get(i));
             }
         }
         return equals;

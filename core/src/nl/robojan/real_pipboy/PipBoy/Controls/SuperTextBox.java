@@ -1,7 +1,6 @@
 package nl.robojan.real_pipboy.PipBoy.Controls;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.Array;
 
 
 /**

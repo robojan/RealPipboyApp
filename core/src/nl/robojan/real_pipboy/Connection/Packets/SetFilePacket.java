@@ -1,7 +1,5 @@
 package nl.robojan.real_pipboy.Connection.Packets;
 
-import com.badlogic.gdx.utils.Array;
-
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -56,6 +54,7 @@ public class SetFilePacket extends DataPacket {
         mFileName = new String(data, buffer.position(), nameLen, charset);
         buffer.position(buffer.position() + nameLen);
         mId = buffer.get();
+        //noinspection PointlessBitwiseExpression
         mFileLength = ((long)buffer.getInt()) & 0xFFFFFFFF;
         mNumPackets = buffer.getInt();
     }

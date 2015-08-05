@@ -227,7 +227,6 @@ public class ScrollbarVert extends Control {
 
     @Override
     public void update(Context context) {
-        IFalloutData data = context.foData;
         setMarkerPosition();
         if(!isShowAlways()) {
             mVertMarker.setVisible(mNumberOfVisibleItems < mNumberOfItems);

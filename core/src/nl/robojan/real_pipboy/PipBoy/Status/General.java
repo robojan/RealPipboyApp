@@ -8,8 +8,6 @@ import nl.robojan.real_pipboy.FalloutData.IFalloutData;
 import nl.robojan.real_pipboy.FalloutData.Karma;
 import nl.robojan.real_pipboy.FalloutData.Reputation;
 import nl.robojan.real_pipboy.FalloutData.Reputations;
-import nl.robojan.real_pipboy.FalloutData.Statistic;
-import nl.robojan.real_pipboy.FalloutData.Statistics;
 import nl.robojan.real_pipboy.FalloutData.StatusItem;
 import nl.robojan.real_pipboy.FalloutData.StatusList;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;

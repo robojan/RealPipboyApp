@@ -67,7 +67,6 @@ public class Line extends Control {
             if(!Assets.manager.isLoaded(TEXTURE_FILE))
                 return;
             mTexture = Assets.manager.get(TEXTURE_FILE, Texture.class);
-            mTexture.setAssetManager(Assets.manager);
         }
         if(mVisible) {
             context.batch.setColor(mColor);

@@ -1,16 +1,15 @@
 package nl.robojan.real_pipboy.Connection;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import nl.robojan.real_pipboy.Connection.Packets.*;
 
@@ -42,6 +41,7 @@ public class ConnectionManager {
     private LinkedBlockingQueue<DataPacket> mRxBuffer = new LinkedBlockingQueue<DataPacket>(128);
 
     private TCPStatus mTCPStatus = TCPStatus.Disconnected;
+    private ReentrantLock mTCPStatusLock = new ReentrantLock();
 
     private HashMap<Byte, HashSet<IPacketHandler>> mPacketHandlers =
             new HashMap<Byte, HashSet<IPacketHandler>>();
@@ -74,9 +74,9 @@ public class ConnectionManager {
 
     public TCPStatus getTCPStatus() {
         TCPStatus status;
-        synchronized (mTCPStatus) {
-             status = mTCPStatus;
-        }
+        mTCPStatusLock.lock();
+        status = mTCPStatus;
+        mTCPStatusLock.unlock();
         return status;
     }
 
@@ -158,24 +158,24 @@ public class ConnectionManager {
                 boolean connected = mConnected.get();
                 if(mTCP.isConnected() != connected) {
                     if(connected) {
-                        synchronized (mTCPStatus) {
-                            mTCPStatus = TCPStatus.Connecting;
-                        }
+                        mTCPStatusLock.lock();
+                        mTCPStatus = TCPStatus.Connecting;
+                        mTCPStatusLock.unlock();
                         if(!mTCP.connect(mTCPHostname, mTCPPort)){
                             mConnected.set(false);
                         }
-                        synchronized (mTCPStatus) {
-                            if(mConnected.get() == true) {
-                                mTCPStatus = TCPStatus.Connected;
-                            } else {
-                                mTCPStatus = TCPStatus.ConnectionFailed;
-                            }
+                        mTCPStatusLock.lock();
+                        if(mConnected.get()) {
+                            mTCPStatus = TCPStatus.Connected;
+                        } else {
+                            mTCPStatus = TCPStatus.ConnectionFailed;
                         }
+                        mTCPStatusLock.unlock();
                     } else {
                         mTCP.disconnect();
-                        synchronized (mTCPStatus) {
-                            mTCPStatus = TCPStatus.Disconnected;
-                        }
+                        mTCPStatusLock.lock();
+                        mTCPStatus = TCPStatus.Disconnected;
+                        mTCPStatusLock.unlock();
                     }
                 }
                 if(mTCP.isConnected()) {

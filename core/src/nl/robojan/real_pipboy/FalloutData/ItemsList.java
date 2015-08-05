@@ -21,7 +21,7 @@ public class ItemsList {
         list.add(item);
     }
 
-    public ItemsList getItemsOfType(Class cls) {
+    public ItemsList getItemsOfType(Class<?> cls) {
         ItemsList result = new ItemsList();
         for(Item item : list){
             if(cls.isAssignableFrom(item.getClass())) {
@@ -38,7 +38,7 @@ public class ItemsList {
         boolean equals = list.size == other.list.size;
         if(equals) {
             for(int i = 0; i < list.size && equals; i++){
-                equals &= list.get(i).equivalent(other.list.get(i));
+                equals = list.get(i).equivalent(other.list.get(i));
             }
         }
         return equals;

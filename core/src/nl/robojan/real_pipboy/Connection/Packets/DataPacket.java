@@ -2,10 +2,6 @@ package nl.robojan.real_pipboy.Connection.Packets;
 
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-
-import javax.xml.crypto.Data;
-
 /**
  * Created by s120330 on 15-7-2015.
  */
@@ -70,7 +66,7 @@ public class DataPacket {
     private void readPacket(byte[] buffer, int off, int len) {
         int dataSize = mHeader.getDataSize();
         assert(len >= dataSize);
-        mData = Arrays.copyOfRange(buffer, off, off + dataSize);
+        System.arraycopy(buffer, off,  mData, 0, dataSize);
     }
 
     @Override

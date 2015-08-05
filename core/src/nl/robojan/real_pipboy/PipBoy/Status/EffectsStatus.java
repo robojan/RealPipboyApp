@@ -187,13 +187,13 @@ public class EffectsStatus extends Control {
         }
 
         @Override
-        public int compareTo(Object o) {
+        public int compareTo(Control o) {
+            if(o == null) {
+                throw new NullPointerException();
+            }
             if(!(o instanceof EffectsItem)) {
                 throw new ClassCastException("Can't compare " + this.getClass().toString() + " to " +
                         o.getClass().toString());
-            }
-            if(o == null) {
-                throw new NullPointerException();
             }
             String str1 = mName.toLowerCase();
             String str2 = ((EffectsItem)o).mName.toLowerCase();

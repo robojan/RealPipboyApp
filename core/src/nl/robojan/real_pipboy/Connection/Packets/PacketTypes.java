@@ -45,7 +45,7 @@ public class PacketTypes {
         Byte type = mPacketMapReverse.get(cls);
         if(type == null)
             return 0;
-        return type.byteValue();
+        return type;
     }
 
     public DataPacket getDataPacket(DataPacketHeader header, byte[] data, int offset, int len) {

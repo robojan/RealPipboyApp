@@ -1,7 +1,6 @@
 package nl.robojan.real_pipboy.Connection;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +9,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
 
 import nl.robojan.real_pipboy.Connection.Packets.DataPacket;
 import nl.robojan.real_pipboy.Connection.Packets.DataPacketHeader;
@@ -105,7 +103,7 @@ public class TCPConnection {
 
     public void fillReceiveBuffer() throws IOException {
         int available = mInputStream.available();
-        int read = 0;
+        int read;
         if(mReceiveBuffer == null) {
             mReceiveBuffer = new byte[available];
             read = mInputStream.read(mReceiveBuffer, 0, available);
@@ -154,7 +152,7 @@ public class TCPConnection {
         while(!isAvailable()) {
             if(!isConnected())
                 throw new IOException("Socket is not connected");
-        };
+        }
 
         DataPacketHeader header = new DataPacketHeader(mReceiveBuffer, 0, mDataAvailable);
         int headerSize = DataPacketHeader.getHeaderSize();

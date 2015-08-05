@@ -4,12 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
-import java.util.HashMap;
-
 import nl.robojan.real_pipboy.FalloutFont.FalloutFont;
 import nl.robojan.real_pipboy.util.GameFileResolver;
 import nl.robojan.real_pipboy.util.ShaderProgramLoader;
-import nl.robojan.real_pipboy.util.StringUtil;
 import nl.robojan.real_pipboy.util.TextFileLoader;
 
 /**
@@ -43,8 +40,7 @@ public class Assets {
     {
         if(index < 1 || index >= mFonts.length)
             throw new IndexOutOfBoundsException("Font index is not valid");
-        FalloutFont font = mFonts[index -1 ];
-        return font;
+        return mFonts[index -1 ];
     }
 
     public static boolean update(){

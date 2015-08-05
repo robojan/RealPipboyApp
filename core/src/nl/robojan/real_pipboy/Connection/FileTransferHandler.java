@@ -84,19 +84,13 @@ public class FileTransferHandler implements IPacketHandler {
     public boolean isTransferCompleted(int id) {
         assert(Byte.MIN_VALUE <= id && id <= Byte.MAX_VALUE);
         FileTransferStatus status = mTransferStatus.get((byte)id);
-        if(status != null) {
-            return status.completed;
-        }
-        return true;
+        return status == null || status.completed;
     }
 
     public boolean isTransferSuccessful(int id) {
         assert(Byte.MIN_VALUE <= id && id <= Byte.MAX_VALUE);
         FileTransferStatus status = mTransferStatus.get((byte)id);
-        if(status != null) {
-            return status.completed && status.resultFileHandle != null;
-        }
-        return false;
+        return status != null && status.completed && status.resultFileHandle != null;
     }
 
     public FileHandle getTransferFileHandle(int id) {

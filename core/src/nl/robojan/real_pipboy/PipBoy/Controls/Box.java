@@ -74,7 +74,6 @@ public class Box extends Control {
             if(!Assets.manager.isLoaded(TEXTURE_FILE))
                 return;
             mTexture = Assets.manager.get(TEXTURE_FILE, Texture.class);
-            mTexture.setAssetManager(Assets.manager);
         }
 
         if(mBottomVisible || mTopVisible || mLeftVisible || mRightVisible) {

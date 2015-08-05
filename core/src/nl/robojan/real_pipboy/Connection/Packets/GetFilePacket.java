@@ -42,7 +42,7 @@ public class GetFilePacket extends DataPacket {
         mId = buffer.get();
         mFlags = buffer.get();
         short fileLen = buffer.getShort();
-        mFileName=  new String(data, buffer.position(), fileLen, charset);
+        mFileName = new String(data, buffer.position(), fileLen, charset);
         buffer.position(buffer.position() + fileLen);
     }
 

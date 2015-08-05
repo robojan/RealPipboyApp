@@ -1,7 +1,6 @@
 package nl.robojan.real_pipboy.PipBoy.Data;
 
 import nl.robojan.real_pipboy.PipBoy.Controls.Image;
-import nl.robojan.real_pipboy.PipBoy.Controls.Line;
 import nl.robojan.real_pipboy.PipBoy.Controls.Rect;
 
 /**

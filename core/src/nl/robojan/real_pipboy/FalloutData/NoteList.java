@@ -20,7 +20,7 @@ public class NoteList {
         boolean equals = list.size == other.list.size;
         if(equals) {
             for(int i = 0; i < list.size && equals; i++){
-                equals &= list.get(i).equivalent(other.list.get(i));
+                equals = list.get(i).equivalent(other.list.get(i));
             }
         }
         return equals;

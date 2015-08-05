@@ -2,7 +2,6 @@ package nl.robojan.real_pipboy.PipBoy.Controls;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Objects;
@@ -52,6 +51,22 @@ public class Image extends Control {
         mHeight = height;
         mFile = file;
         mColor = color;
+    }
+
+    @Override
+    public int compareTo(Control o) {
+        int result = super.compareTo(o);
+        if(result == 0) {
+            if(!(o instanceof Image)) {
+                return -1;
+            }
+            if(mFile == null) {
+                result = ((Image) o).mFile == null ? 0 : 1;
+            } else {
+                result = mFile.compareTo(((Image) o).mFile);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -146,6 +161,7 @@ public class Image extends Control {
         if(file != null) {
             Assets.manager.load(file, Texture.class);
         }
+        sortParentChildren();
     }
 
     public void setTile(boolean tile) {

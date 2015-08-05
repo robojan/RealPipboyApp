@@ -4,11 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -44,8 +42,8 @@ public class GameString {
             String line;
             while((line = reader.readLine()) != null)
             {
-                line.trim();
-                if(line.isEmpty() || line.startsWith("#"))
+                line = line.trim();
+                if(line.length() == 0 || line.startsWith("#"))
                     continue;
                 int index = line.indexOf('=');
                 if(index == -1){

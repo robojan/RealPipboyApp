@@ -10,7 +10,7 @@ public class Karma {
         NEUTRAL,
         EVIL,
         VERY_EVIL
-    };
+    }
 
     public static KarmaLevel getKarmaLevel(int value) {
         if(value < -750) {
