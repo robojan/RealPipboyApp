@@ -36,10 +36,11 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
     private Vector2 mUsableWorldMapDimensions, mCellNW, mCellSE, mWorldMapOffset;
     private float mWorldMapScale;
     private String mWorldMapTexture;
+    private MapMarkerList mMapMarkers;
 
     public FalloutDataManager() {
-        mPlayerName = new String("Player name");
-        mCurrentLocation = new String("Some location");
+        mPlayerName = "Player name";
+        mCurrentLocation = "Some location";
         mDate = new GregorianCalendar();
         mSpecial = new StatusList();
         mSkills = new StatusList();
@@ -63,6 +64,7 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
         mWorldMapOffset = new Vector2();
         mWorldMapScale = 1;
         mWorldMapTexture = "";
+        mMapMarkers = new MapMarkerList();
 
         ConnectionManager conn = ConnectionManager.getInstance();
         PacketTypes pt = PacketTypes.getInstance();
@@ -74,6 +76,7 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
         conn.registerPacketHandler(pt.getType(SetInventoryPacket.class), this);
         conn.registerPacketHandler(pt.getType(SetNotesPacket.class), this);
         conn.registerPacketHandler(pt.getType(SetQuestsPacket.class), this);
+        conn.registerPacketHandler(pt.getType(SetMapMarkersPacket.class), this);
     }
 
     @Override
@@ -87,6 +90,8 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
         conn.deregisterPacketHandler(pt.getType(SetPlayerEffectsPacket.class), this);
         conn.deregisterPacketHandler(pt.getType(SetInventoryPacket.class), this);
         conn.deregisterPacketHandler(pt.getType(SetNotesPacket.class), this);
+        conn.deregisterPacketHandler(pt.getType(SetQuestsPacket.class), this);
+        conn.deregisterPacketHandler(pt.getType(SetMapMarkersPacket.class), this);
     }
 
     @Override
@@ -107,7 +112,9 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
         } else if (packet instanceof SetNotesPacket) {
             setNotes((SetNotesPacket)packet);
         } else if (packet instanceof SetQuestsPacket) {
-            setQuests((SetQuestsPacket)packet);
+            setQuests((SetQuestsPacket) packet);
+        } else if (packet instanceof SetMapMarkersPacket) {
+            setMapMarkers((SetMapMarkersPacket)packet);
         } else {
             Gdx.app.error("DATA", "Unknown packet received: " + packet.toString());
         }
@@ -211,6 +218,10 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
 
     private void setQuests(SetQuestsPacket packet) {
         mQuests = packet.getQuests();
+    }
+
+    private void setMapMarkers(SetMapMarkersPacket packet) {
+        mMapMarkers = packet.getMarkers();
     }
 
     @Override
@@ -466,5 +477,10 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
     @Override
     public Vector3 getPlayerPos() {
         return mPlayerPos;
+    }
+
+    @Override
+    public MapMarkerList getMapMarkers() {
+        return mMapMarkers;
     }
 }

@@ -465,4 +465,9 @@ public class FalloutDataTest implements IFalloutData {
     public float getWorldMapScale() {
         return 1;
     }
+
+    @Override
+    public MapMarkerList getMapMarkers() {
+        return new MapMarkerList();
+    }
 }

@@ -21,6 +21,8 @@ public class Image extends Control {
     private Color mColor = new Color(1,1,1,1);
     private boolean mTileH = false, mTileV = false;
     private boolean mVisible = true;
+    private Texture.TextureFilter mFilterMag = Texture.TextureFilter.Linear;
+    private Texture.TextureFilter mFilterMin = Texture.TextureFilter.Linear;
 
     private Texture mTexture = null;
 
@@ -80,57 +82,12 @@ public class Image extends Control {
 
         if(mVisible) {
             context.batch.setColor(mColor);
-            //mTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+            mTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+            mTexture.setFilter(mFilterMin, mFilterMag);
             context.batch.draw(mTexture, 0, Constants.PIPBOY_HEIGHT - mHeight, mWidth, mHeight,
                     0, 1, mTileH ? mWidth/mTexture.getWidth() : 1,
                      1 - (mTileV ? mHeight/mTexture.getHeight() : 1));
         }
-/*
-        if(mVisible) {
-            context.batch.setColor(mColor);
-            if (!mTileH && !mTileV) {
-                context.batch.draw(mTexture, mX, Constants.PIPBOY_HEIGHT - mY - mHeight,
-                        mWidth, mHeight);
-            } else if (mTileH && !mTileV) {
-                for (float x = mX; x < mX + mWidth; x += mTexture.getWidth()) {
-                    if (x + mTexture.getWidth() > mX + mWidth) {
-                        float width = mWidth - x - mX;
-                        context.batch.draw(mTexture, x, Constants.PIPBOY_HEIGHT - mY - mHeight,
-                                width, mHeight, 0, 0, (int) width, mTexture.getHeight(), false, false);
-                    } else {
-                        context.batch.draw(mTexture, x, Constants.PIPBOY_HEIGHT - mY - mHeight,
-                                mTexture.getWidth(), mHeight);
-                    }
-                }
-            } else if (!mTileH && mTileV) {
-                for (float y = 0; y < mHeight; y += mTexture.getHeight()) {
-                    if (y + mTexture.getHeight() > mHeight) {
-                        float height = mHeight - y;
-                        context.batch.draw(mTexture, mX, Constants.PIPBOY_HEIGHT - mY - y,
-                                mTexture.getWidth(), height, 0, 0, (int) mTexture.getWidth(),
-                                (int) height, false, false);
-                    } else {
-                        context.batch.draw(mTexture, mX, Constants.PIPBOY_HEIGHT - mY - y,
-                                mWidth, mTexture.getHeight());
-                    }
-                }
-            } else if (mTileH && mTileV) {
-                for (float y = 0; y < mHeight; y += mTexture.getHeight()) {
-                    for (float x = 0; x < mWidth; x += mTexture.getWidth()) {
-                        int width = mTexture.getWidth();
-                        int height = mTexture.getHeight();
-                        if (x + mTexture.getWidth() > mWidth) {
-                            width = (int) (mWidth - x);
-                        }
-                        if (y + mTexture.getHeight() > mHeight) {
-                            height = (int) (mHeight - y);
-                        }
-                        context.batch.draw(mTexture, mX + x, Constants.PIPBOY_HEIGHT - mY - y,
-                                width, height, 0, 0, (int) width, height, false, false);
-                    }
-                }
-            }
-        }*/
 
         super.render(context);
 
@@ -215,5 +172,10 @@ public class Image extends Control {
 
     public boolean getVisible() {
         return mVisible;
+    }
+
+    public void setFilter(Texture.TextureFilter minFilter, Texture.TextureFilter magFilter) {
+        mFilterMin = minFilter;
+        mFilterMag = magFilter;
     }
 }

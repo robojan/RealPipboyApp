@@ -2,12 +2,16 @@ package nl.robojan.real_pipboy.PipBoy.Data;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 import nl.robojan.real_pipboy.Context;
 import nl.robojan.real_pipboy.FalloutData.IFalloutData;
+import nl.robojan.real_pipboy.FalloutData.MapMarker;
+import nl.robojan.real_pipboy.FalloutData.MapMarkerList;
 import nl.robojan.real_pipboy.PipBoy.Constants;
 import nl.robojan.real_pipboy.PipBoy.Controls.Image;
 import nl.robojan.real_pipboy.PipBoy.Controls.Rect;
+import nl.robojan.real_pipboy.RenderContext;
 import nl.robojan.real_pipboy.util.GameFileResolver;
 
 /**
@@ -17,6 +21,7 @@ public class WorldMapMenu extends Rect {
 
     private static final String DEFAULT_WORLDMAP_TEXTURE = "textures/interface/worldmap/wasteland_nv_1024_no_map.dds";
     private static final String PLAYER_INDICATOR = "textures/interface/icons/misc/glow_cursor.dds";
+    private static final float PLAYER_INDICATOR_ANGLE_OFFSET = 0.47f;
     private static final float ZOOM = 1.25f;
     private static final float CELL_SIZE = 4096 * ZOOM;
 
@@ -26,7 +31,6 @@ public class WorldMapMenu extends Rect {
     private float mMagnification = 0.5f;
     private float mMapScale = 1.0f;
 
-    private Image mZeroIndicator;
     private Image mPlayerIndicator;
 
     private Vector2 mZeroPos = new Vector2(0.5f, 0.5f);
@@ -40,6 +44,8 @@ public class WorldMapMenu extends Rect {
 
     private Vector3 mPlayerPos = new Vector3();
     private float mPlayerAngle = 0;
+    private MapMarkerList mMapMarkers = new MapMarkerList();
+    private Array<MapMarkerIcon> mMapMarkersImage = new Array<MapMarkerIcon>();
 
     private boolean mVisible = true;
 
@@ -52,12 +58,8 @@ public class WorldMapMenu extends Rect {
                 mMapSize.y * mMagnification);
         addChild(mMap);
 
-        mZeroIndicator = new Image(0.5f * mMap.getWidth(), 0.5f * mMap.getHeight(),
-                "textures/interface/icons/world map/inverted/icon_map_vault_inverted.dds.png", 32, 32);
-        mMap.addChild(mZeroIndicator);
-
         mPlayerIndicator = new Image(0.5f * mMap.getWidth(), 0.5f * mMap.getHeight(),
-                PLAYER_INDICATOR, 32, 32);
+                PLAYER_INDICATOR, 48, 48*2);
         mMap.addChild(mPlayerIndicator);
 
 
@@ -68,20 +70,27 @@ public class WorldMapMenu extends Rect {
     public void centerAroundPlayer() {
         mMagnification = 1.0f;
         setIconPositionsAndScale();
-        mMap.setX(mWidth/2 - mPlayerIndicator.getX());
+        mMap.setX(mWidth / 2 - mPlayerIndicator.getX());
         mMap.setY(mHeight / 2 - mPlayerIndicator.getY());
     }
 
     public void setVisible(boolean visible) {
         mVisible = visible;
         mMap.setVisible(visible);
-        mZeroIndicator.setVisible(visible);
         mPlayerIndicator.setVisible(visible);
+        for(MapMarkerIcon icon : mMapMarkersImage) {
+            icon.setVisible(visible);
+        }
         centerAroundPlayer();
     }
 
     public boolean isVisible() {
         return mVisible;
+    }
+
+    public Vector2 positionToMapPosition(Vector3 pos) {
+        return new Vector2(mZeroPos.x * mMap.getWidth() + pos.x * mPixelsPerUnit.x,
+                mZeroPos.y * mMap.getHeight() - pos.y *mPixelsPerUnit.y);
     }
 
     public void calculateMapPositions() {
@@ -94,22 +103,19 @@ public class WorldMapMenu extends Rect {
     }
 
     public void setIconPositionsAndScale() {
-
-        mZeroIndicator.setX(mZeroPos.x * mMap.getWidth() - mZeroIndicator.getWidth()/2);
-        mZeroIndicator.setY(mZeroPos.y * mMap.getHeight() - mZeroIndicator.getHeight() / 2);
-
-        mPlayerIndicator.setX(mZeroPos.x * mMap.getWidth() + mPlayerPos.x * mPixelsPerUnit.x -
-                mPlayerIndicator.getWidth() / 2);
-        mPlayerIndicator.setY(mZeroPos.y * mMap.getHeight() - mPlayerPos.y * mPixelsPerUnit.y -
-                mPlayerIndicator.getHeight() / 2);
-        mPlayerIndicator.setAngle(mPlayerAngle);
+        mPlayerIndicator.setOrigin(new Vector2(mPlayerIndicator.getWidth() * 0.41f,
+                mPlayerIndicator.getHeight() * 0.28f));
+        mPlayerIndicator.setPos(positionToMapPosition(mPlayerPos));
+        mPlayerIndicator.setAngle(-mPlayerAngle - PLAYER_INDICATOR_ANGLE_OFFSET);
+        for(MapMarkerIcon icon : mMapMarkersImage) {
+            icon.updatePositionAndScale();
+        }
     }
 
     @Override
     public void update(Context context) {
         super.update(context);
         IFalloutData data = context.foData;
-
 
         String texture = data.getWorldMapPath();
         if(texture.isEmpty()) texture = DEFAULT_WORLDMAP_TEXTURE;
@@ -141,5 +147,53 @@ public class WorldMapMenu extends Rect {
         mPlayerPos = data.getPlayerPos();
         mPlayerAngle = data.getPlayerRot().z;
         setIconPositionsAndScale();
+
+        MapMarkerList markers = data.getMapMarkers();
+        if(!mMapMarkers.equivalent(markers) && markers != null) {
+            mMapMarkers = markers;
+
+            removeAllMapMarkers();
+
+            for(MapMarker marker : mMapMarkers.markers) {
+                MapMarkerIcon markerImage = new MapMarkerIcon(0,0, 32, 32, marker);
+                mMapMarkersImage.add(markerImage);
+                mMap.addChild(markerImage, true);
+            }
+        }
+    }
+
+    public void removeAllMapMarkers() {
+        for(MapMarkerIcon marker : mMapMarkersImage) {
+            mMap.removeChild(marker);
+            marker.dispose();
+        }
+        mMapMarkersImage.clear();
+    }
+
+    private class MapMarkerIcon extends Image{
+        private MapMarker mMarker;
+        private float mXOffset, mYOffset;
+
+        public MapMarkerIcon(float xOffset, float yOffset, float width, float height,
+                             MapMarker marker) {
+            super(xOffset, yOffset, marker.getIcon(!marker.canTravel()), width, height);
+            mXOffset = xOffset;
+            mYOffset = yOffset;
+            mMarker = marker;
+            setOrigin(new Vector2(width/2, height/2));
+            setVisible(marker.isVisible());
+            updatePositionAndScale();
+        }
+
+        public void updatePositionAndScale() {
+            Vector2 pos = positionToMapPosition(mMarker.getPos());
+            pos.add(mXOffset, mYOffset);
+            setPos(pos);
+        }
+
+        @Override
+        public void setVisible(boolean visible) {
+            super.setVisible(visible && mMarker.isVisible());
+        }
     }
 }

@@ -72,4 +72,5 @@ public interface IFalloutData extends Disposable{
     Vector2 getWorldMapCellSE();
     Vector2 getWorldMapOffset();
     float getWorldMapScale();
+    MapMarkerList getMapMarkers();
 }

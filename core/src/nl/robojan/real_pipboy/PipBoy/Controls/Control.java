@@ -36,7 +36,6 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
         mChilds = new Array<Control>(4);
         mX = x;
         mY = y;
-        mOrigin = new Vector2(x, y);
     }
 
     @Override
@@ -99,13 +98,18 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
     public void render(RenderContext context){
         for(Control child : mChilds)
         {
-            Matrix4 t = context.batch.getTransformMatrix();
-            Matrix4 t_saved = new Matrix4(t);
-            t.translate(child.getOrigin().x, -child.getOrigin().y, 0);
-            t.rotateRad(0, 0, 1, child.getAngle());
-            t.translate(child.getX(),
-                    -(child.getY()), 0);
-            context.batch.setTransformMatrix(t);
+            Matrix4 t_saved = new Matrix4(context.batch.getTransformMatrix());
+            // Object rotation matrix
+            Matrix4 t1 = new Matrix4();
+            t1.rotateRad(0, 0, 1, child.getAngle());
+            t1.translate(-child.getOrigin().x, -Constants.PIPBOY_HEIGHT + child.getOrigin().y, 0);
+            // Object location matrix
+            Matrix4 t2 = new Matrix4();
+            t2.translate(child.getX(),
+                    Constants.PIPBOY_HEIGHT-(child.getY()), 0);
+            t2.mul(t_saved);
+            t2.mul(t1);
+            context.batch.setTransformMatrix(t2);
             if(child.isClipping()) {
                 setClippingRectangle(context, child.getSize());
             }
