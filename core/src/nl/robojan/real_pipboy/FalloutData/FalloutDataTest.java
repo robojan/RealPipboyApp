@@ -468,4 +468,29 @@ public class FalloutDataTest implements IFalloutData {
     public MapMarkerList getMapMarkers() {
         return new MapMarkerList();
     }
+
+    @Override
+    public int getNumStimpacks() {
+        return 5;
+    }
+
+    @Override
+    public int getNumDrBags() {
+        return 0;
+    }
+
+    @Override
+    public int getNumRadAway() {
+        return 0;
+    }
+
+    @Override
+    public int getNumRadX() {
+        return 0;
+    }
+
+    @Override
+    public boolean isLimbDamaged() {
+        return true;
+    }
 }

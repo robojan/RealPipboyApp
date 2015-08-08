@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import nl.robojan.real_pipboy.FalloutData.Note;
 import nl.robojan.real_pipboy.FalloutData.Quest;
 import nl.robojan.real_pipboy.FalloutData.QuestObjective;
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.Image;
 import nl.robojan.real_pipboy.PipBoy.Controls.ListBox;

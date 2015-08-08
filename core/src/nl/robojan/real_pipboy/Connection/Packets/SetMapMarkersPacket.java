@@ -45,6 +45,7 @@ public class SetMapMarkersPacket extends DataPacket {
         for(int i = 0; i < numNotes; i++) {
             short type = buffer.getShort();
             short flags = buffer.getShort();
+            int id = buffer.getInt();
             float x = buffer.getFloat();
             float y = buffer.getFloat();
             float z = buffer.getFloat();
@@ -58,7 +59,7 @@ public class SetMapMarkersPacket extends DataPacket {
             if(reputationLen > 0)
                 reputation = new String(data, buffer.position(), reputationLen, charset);
             buffer.position(buffer.position() + reputationLen);
-            mMarkers.add(new MapMarker(new Vector3(x, y, z), name, reputation, type, flags));
+            mMarkers.add(new MapMarker(id, new Vector3(x, y, z), name, reputation, type, flags));
         }
     }
 
@@ -67,7 +68,7 @@ public class SetMapMarkersPacket extends DataPacket {
         int itemsSize = 0;
 
         for(MapMarker marker : mMarkers.markers) {
-            itemsSize += 20;
+            itemsSize += 24;
             if(marker.getName() != null)
                 itemsSize += marker.getName().length();
             if(marker.getReputation() != null)
@@ -88,6 +89,7 @@ public class SetMapMarkersPacket extends DataPacket {
         for(MapMarker marker : mMarkers.markers) {
             buffer.putShort(marker.getType());
             buffer.putShort(marker.getFlags());
+            buffer.putInt(marker.getId());
             buffer.putFloat(marker.getPos().x);
             buffer.putFloat(marker.getPos().y);
             buffer.putFloat(marker.getPos().z);

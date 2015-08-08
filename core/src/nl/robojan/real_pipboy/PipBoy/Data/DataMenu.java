@@ -4,14 +4,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 
+import nl.robojan.real_pipboy.Connection.ConnectionManager;
+import nl.robojan.real_pipboy.Connection.Packets.DoActionPacket;
 import nl.robojan.real_pipboy.Context;
 import nl.robojan.real_pipboy.FalloutData.GameString;
 import nl.robojan.real_pipboy.FalloutData.IFalloutData;
+import nl.robojan.real_pipboy.FalloutData.MapMarker;
 import nl.robojan.real_pipboy.FalloutData.Note;
 import nl.robojan.real_pipboy.FalloutData.NoteList;
 import nl.robojan.real_pipboy.FalloutData.Quest;
 import nl.robojan.real_pipboy.FalloutData.QuestList;
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.ListBox;
 import nl.robojan.real_pipboy.PipBoy.Controls.ListBoxItem;
@@ -108,22 +111,65 @@ public class DataMenu extends Control {
 
             mButtonA = new TextBox(mWidth, buttonY, GameString.getString(BUTTONA_STRINGS[0]), 20,
                     15, Align.right, white);
+            mButtonA.addClickableListener(mButtonAListener);
             addChild(mButtonA);
             mButtonX = new TextBox(mWidth, buttonY + mButtonA.getHeight(),
                     GameString.getString(BUTTONX_STRINGS[0]), 20, 15, Align.right, white);
+            mButtonX.addClickableListener(mButtonXListener);
             addChild(mButtonX);
             mButtonY = new TextBox(mWidth, mButtonX.getBottom(),
                     GameString.getString("sChallengeToggle"), 20, 15, Align.right, white);
+            mButtonY.addClickableListener(mButtonYListener);
             addChild(mButtonY);
 
             mDataRect = new DataRect(width - 400, mQuestsList.getY(), 400, 400);
             addChild(mDataRect);
         }
 
+        private ClickableListener mButtonAListener = new ClickableListener() {
+            @Override
+            public void onClickableEvent(Control source, Object user) {
+                MapMarker marker = mWorldMap.getSelectedMarker();
+                switch(mCurrentTab) {
+                    case 1:
+                        //Travel
+                        if(marker != null) {
+                            ConnectionManager.getInstance().send(new DoActionPacket(
+                                    DoActionPacket.ACTION_FASTTRAVEL, marker.getId()));
+                        }
+                        break;
+                    case 2:
+                        // SetActiveQuest
+                        if(mSelectedQuest != null) {
+                            ConnectionManager.getInstance().send(new DoActionPacket(
+                                    DoActionPacket.ACTION_SETACTIVEQUEST,
+                                    mSelectedQuest.getQuestID()));
+                        }
+                        break;
+                    default:
+
+                }
+            }
+        };
+
+        private ClickableListener mButtonXListener = new ClickableListener() {
+            @Override
+            public void onClickableEvent(Control source, Object user) {
+
+            }
+        };
+
+        private ClickableListener mButtonYListener = new ClickableListener() {
+            @Override
+            public void onClickableEvent(Control source, Object user) {
+
+            }
+        };
+
         private void setLocalMapActive(boolean active) {
             if(active) {
                 mButtonA.setVisible(false);
-                mButtonX.setVisible(true);
+                mButtonX.setVisible(false);
                 mButtonX.setY(mQuestsList.getY());
                 mButtonX.setText(GameString.getString(BUTTONX_STRINGS[0]));
                 mButtonY.setVisible(false);
@@ -138,7 +184,7 @@ public class DataMenu extends Control {
                 mWorldMap.setEnabled(true);
                 mButtonA.setVisible(true);
                 mButtonA.setText(GameString.getString(BUTTONA_STRINGS[0]));
-                mButtonX.setVisible(true);
+                mButtonX.setVisible(false);
                 mButtonX.setY(mButtonA.getBottom());
                 mButtonX.setText(GameString.getString(BUTTONX_STRINGS[0]));
                 mButtonY.setVisible(false);
@@ -217,6 +263,36 @@ public class DataMenu extends Control {
                 setMiscActive(mCurrentTab == 3);
                 setRadioActive(mCurrentTab == 4);
                 mDataRect.hideAll();
+            }
+            switch(mCurrentTab) {
+                case 1:
+                    if(mWorldMap.getSelectedMarker() != null) {
+                        mButtonA.setEnabled(true);
+                        mButtonA.setColor(new Color(1, 1, 1, 1));
+                    } else {
+                        mButtonA.setEnabled(false);
+                        mButtonA.setColor(new Color(1, 1, 1, 0.5f));
+                    }
+                    break;
+                case 2:
+                    if(mSelectedQuest != null) {
+                        mButtonA.setEnabled(true);
+                        mButtonA.setColor(new Color(1, 1, 1, 1));
+                        mButtonX.setEnabled(true);
+                        mButtonX.setColor(new Color(1, 1, 1, 1));
+                    } else {
+                        mButtonA.setEnabled(false);
+                        mButtonA.setColor(new Color(1, 1, 1, 0.5f));
+                        mButtonX.setEnabled(false);
+                        mButtonX.setColor(new Color(1, 1, 1, 0.5f));
+                    }
+                    break;
+                default:
+                    mButtonA.setEnabled(false);
+                    mButtonA.setColor(new Color(1, 1, 1, 0.5f));
+                    mButtonX.setEnabled(false);
+                    mButtonX.setColor(new Color(1, 1, 1, 0.5f));
+
             }
 
             NoteList notes = data.getNotes();

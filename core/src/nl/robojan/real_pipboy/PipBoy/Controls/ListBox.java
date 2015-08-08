@@ -247,6 +247,10 @@ public class ListBox extends Control{
         }
     }
 
+    public void resetScrollPos() {
+        mYOffset = 0;
+    }
+
     @Override
     public boolean tap(float x, float y, int count, int button) {
         boolean handled = super.tap(x, y, count, button);
@@ -279,7 +283,7 @@ public class ListBox extends Control{
         x -= mX;
         y -= mY;
 
-        if(getSize().contains(x,y) && mEnabled) {
+        if(getSize().contains(x,y) && isEnabled()) {
             if(!handled && mNumberOfVisibleItems < mItems.size()) {
                 mPanning = true;
             }else {

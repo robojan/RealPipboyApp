@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 
+import nl.robojan.real_pipboy.Connection.ConnectionManager;
+import nl.robojan.real_pipboy.Connection.Packets.DoActionPacket;
 import nl.robojan.real_pipboy.Context;
 import nl.robojan.real_pipboy.FalloutData.AidItem;
 import nl.robojan.real_pipboy.FalloutData.AmmoItem;
@@ -14,7 +16,7 @@ import nl.robojan.real_pipboy.FalloutData.Item;
 import nl.robojan.real_pipboy.FalloutData.ItemsList;
 import nl.robojan.real_pipboy.FalloutData.MiscItem;
 import nl.robojan.real_pipboy.FalloutData.WeaponItem;
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.Image;
 import nl.robojan.real_pipboy.PipBoy.Controls.ListBox;
@@ -148,9 +150,27 @@ public class InventoryMenu extends Control {
                 }
                 Item item = (Item) user;
                 ItemListItem element = (ItemListItem) source;
-                mSelectedItem = item;
-                IM_InventoryList.highLightItem(element, true);
-                displayItem(item);
+                if(mSelectedItem == item) {
+                    if(item.isEquippable() ) {
+                        if(item.isEquipped()) {
+                            ConnectionManager.getInstance().send(
+                                    new DoActionPacket(DoActionPacket.ACTION_UNEQUIPITEM,
+                                            item.getId(), 0, 0));
+                        } else {
+                            ConnectionManager.getInstance().send(
+                                    new DoActionPacket(DoActionPacket.ACTION_EQUIPITEM,
+                                            item.getId(), 0, 0));
+                        }
+                    } else if(item instanceof AidItem) {
+                        ConnectionManager.getInstance().send(
+                                new DoActionPacket(DoActionPacket.ACTION_EQUIPITEM,
+                                        item.getId(), 0, 1));
+                    }
+                } else {
+                    mSelectedItem = item;
+                    IM_InventoryList.highLightItem(element, true);
+                    displayItem(item);
+                }
             }
         };
 
@@ -162,6 +182,7 @@ public class InventoryMenu extends Control {
                 mCurrentTab = IM_Tabline.getCurrentTab();
                 mSelectedItem = null;
                 fillListWithItems();
+                IM_InventoryList.resetScrollPos();
                 IM_InventoryList.highLightItem(-1);
                 IM_ItemInfoRect.setItem(null);
                 IM_ItemIcon.setFile(null);

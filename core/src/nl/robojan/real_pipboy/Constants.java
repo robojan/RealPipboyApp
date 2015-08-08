@@ -1,4 +1,4 @@
-package nl.robojan.real_pipboy.PipBoy;
+package nl.robojan.real_pipboy;
 
 /**
  * Created by s120330 on 7-7-2015.
@@ -17,6 +17,11 @@ public class Constants {
     public static final float BACKGROUND_FILL_BRIGHTNESS = 0.5f;
 
     public static final String FNF_IMAGE = "textures/interface/shared/missing_image.dds.png";
+
+    public static final int STIMPACK_REFID = 0x15169;
+    public static final int DRBAG_REFID = 0xcb05c;
+    public static final int RADAWAY_REFID = 0x15167;
+    public static final int RADX_REFID = 0x15168;
 
     private static final float[] BRIGHTNESSES = new float[]{
             LINE_BRIGHTNESS,

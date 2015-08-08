@@ -7,7 +7,7 @@ import nl.robojan.real_pipboy.Context;
 import nl.robojan.real_pipboy.FalloutData.IFalloutData;
 import nl.robojan.real_pipboy.FalloutData.GameString;
 import nl.robojan.real_pipboy.FalloutData.StatusEffects;
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.Line;
 import nl.robojan.real_pipboy.PipBoy.Controls.ListBox;

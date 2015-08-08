@@ -15,7 +15,7 @@ import java.util.Collections;
 
 import nl.robojan.real_pipboy.Assets;
 import nl.robojan.real_pipboy.Context;
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.RenderContext;
 
 /**

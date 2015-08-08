@@ -5,6 +5,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
+import nl.robojan.real_pipboy.Connection.ConnectionManager;
+import nl.robojan.real_pipboy.Connection.Packets.DoActionPacket;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.Context;
 import nl.robojan.real_pipboy.FalloutData.IFalloutData;
 import nl.robojan.real_pipboy.FalloutData.GameString;
@@ -143,15 +146,36 @@ public class Status extends Control {
 
     public void createActionButtons() {
         stats_stimpak_button = new TextBox(850, 10, "Stimpak", Align.right);
+        stats_stimpak_button.addClickableListener(mConsumeableListener);
         stats_healing_mode = new TextBox(stats_stimpak_button.getX(),
                 stats_stimpak_button.getBottom(), "Limbs", Align.right);
+        stats_healing_mode.addClickableListener(mConsumeableListener);
         stats_radaway_button = new TextBox(stats_stimpak_button.getX(),
                 stats_stimpak_button.getY(), "RadAway", Align.right);
+        stats_radaway_button.addClickableListener(mConsumeableListener);
         stats_radx_button = new TextBox(stats_healing_mode.getX(),
                 stats_healing_mode.getY(), "Rad-X", Align.right);
+        stats_radx_button.addClickableListener(mConsumeableListener);
         stats_drbag_button = new TextBox(stats_healing_mode.getX(),
                 stats_healing_mode.getBottom(), "Docter's Bag", Align.right);
+        stats_drbag_button.addClickableListener(mConsumeableListener);
     }
+
+    private ClickableListener mConsumeableListener = new ClickableListener() {
+        @Override
+        public void onClickableEvent(Control source, Object user) {
+            ConnectionManager conn = ConnectionManager.getInstance();
+            if(source == stats_stimpak_button) {
+                conn.send(new DoActionPacket(DoActionPacket.ACTION_USESTIMPACK));
+            } else if(source == stats_drbag_button) {
+                conn.send(new DoActionPacket(DoActionPacket.ACTION_USEDRBAG));
+            } else if(source == stats_radaway_button) {
+                conn.send(new DoActionPacket(DoActionPacket.ACTION_USERADAWAY));
+            } else if(source == stats_radx_button) {
+                conn.send(new DoActionPacket(DoActionPacket.ACTION_USERADX));
+            }
+        }
+    };
 
     public void setCNDActive(boolean active) {
         if (active) {
@@ -254,6 +278,47 @@ public class Status extends Control {
 
             stats_player_name.setText(String.format("%s - Level %d", data.getPlayerName(),
                     data.getLevel()));
+            int numStimpacks = data.getNumStimpacks();
+            stats_stimpak_button.setText((numStimpacks > 0 ? "("+ numStimpacks + ") " : "" ) +
+                    "Stimpak");
+            if(numStimpacks > 0 && (data.getHP() < data.getMaxHP())) {
+                stats_stimpak_button.setEnabled(true);
+                stats_stimpak_button.setColor(new Color(1,1,1,1));
+            } else {
+                stats_stimpak_button.setEnabled(false);
+                stats_stimpak_button.setColor(new Color(1, 1, 1, 0.5f));
+            }
+            int numDrBags = data.getNumDrBags();
+            stats_drbag_button.setText((numDrBags > 0 ? "("+ numDrBags + ") " : "" ) +
+                    "Docter's Bag");
+            if(numDrBags > 0 && (data.isLimbDamaged())) {
+                stats_drbag_button.setEnabled(true);
+                stats_drbag_button.setColor(new Color(1,1,1,1));
+            } else {
+                stats_drbag_button.setEnabled(false);
+                stats_drbag_button.setColor(new Color(1, 1, 1, 0.5f));
+            }
+            int numRadAway = data.getNumRadAway();
+            stats_radaway_button.setText((numRadAway > 0 ? "("+ numRadAway + ") " : "" ) +
+                    "RadAway");
+            if(numRadAway > 0 && data.getRads() > 0) {
+                stats_radaway_button.setEnabled(true);
+                stats_radaway_button.setColor(new Color(1,1,1,1));
+            } else {
+                stats_radaway_button.setEnabled(false);
+                stats_radaway_button.setColor(new Color(1, 1, 1, 0.5f));
+            }
+            int numRadx = data.getNumRadX();
+            stats_radx_button.setText((numRadx > 0 ? "("+ numRadx + ") " : "" ) +
+                    "Rad-X");
+            if(numRadx > 0) {
+                stats_radx_button.setEnabled(true);
+                stats_radx_button.setColor(new Color(1,1,1,1));
+            } else {
+                stats_radx_button.setEnabled(false);
+                stats_radx_button.setColor(new Color(1, 1, 1, 0.5f));
+            }
+
             if(data.isHardcore()) {
                 if(!containsChild(stats_H2O_button))
                     addChild(stats_H2O_button, true);

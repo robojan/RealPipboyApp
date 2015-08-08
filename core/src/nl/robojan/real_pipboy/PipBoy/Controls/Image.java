@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.Objects;
 
 import nl.robojan.real_pipboy.Assets;
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.RenderContext;
 
 /**

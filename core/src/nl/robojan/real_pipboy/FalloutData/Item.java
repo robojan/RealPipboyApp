@@ -19,6 +19,7 @@ public class Item {
 
     public Item(Long id, String name, int amount, int value, float weight, String icon, String badge,
                 boolean equippable, boolean equipped, String effect){
+        mId = id;
         mName = name;
         mAmount = amount;
         mValue = value;

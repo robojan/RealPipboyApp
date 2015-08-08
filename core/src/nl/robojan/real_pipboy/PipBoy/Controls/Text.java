@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Align;
 import nl.robojan.real_pipboy.Assets;
 import nl.robojan.real_pipboy.FalloutFont.FalloutFont;
 import nl.robojan.real_pipboy.FalloutFont.FalloutGlyphLayout;
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.RenderContext;
 
 /**

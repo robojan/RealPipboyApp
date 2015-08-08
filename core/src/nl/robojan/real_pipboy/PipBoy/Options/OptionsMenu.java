@@ -5,8 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 
 import nl.robojan.real_pipboy.Context;
-import nl.robojan.real_pipboy.FalloutData.IFalloutData;
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.TabLine;
 import nl.robojan.real_pipboy.PipBoy.Controls.Text;

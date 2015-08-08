@@ -12,14 +12,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
-import nl.robojan.real_pipboy.Assets;
-import nl.robojan.real_pipboy.Context;
+import nl.robojan.real_pipboy.*;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Data.DataMenu;
 import nl.robojan.real_pipboy.PipBoy.Items.InventoryMenu;
 import nl.robojan.real_pipboy.PipBoy.Options.OptionsMenu;
 import nl.robojan.real_pipboy.PipBoy.Status.StatusMenu;
-import nl.robojan.real_pipboy.RenderContext;
 import nl.robojan.real_pipboy.util.ShaderProgramLoader;
 
 /**
@@ -51,7 +49,7 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
         Gdx.input.setInputProcessor(mInputMultiplexer);
 
         createProjectionMatrix(DISPLAY_WIDTH, DISPLAY_HEIGHT,
-                0, -(Constants.PIPBOY_HEIGHT - DISPLAY_HEIGHT));
+                0, -(nl.robojan.real_pipboy.Constants.PIPBOY_HEIGHT - DISPLAY_HEIGHT));
 
         // Create the menus
         mPages = new Control[4];
@@ -132,7 +130,7 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
         // Draw background
         if(mTexBackground != null) {
             context.batch.setColor(1,1,1,1);
-            context.batch.draw(mTexBackground, 0, 0, Constants.PIPBOY_WIDTH, Constants.PIPBOY_HEIGHT);
+            context.batch.draw(mTexBackground, 0, 0, nl.robojan.real_pipboy.Constants.PIPBOY_WIDTH, nl.robojan.real_pipboy.Constants.PIPBOY_HEIGHT);
         }
 
         // Draw pipboy

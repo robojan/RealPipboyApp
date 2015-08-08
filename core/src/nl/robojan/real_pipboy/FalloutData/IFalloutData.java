@@ -73,4 +73,9 @@ public interface IFalloutData extends Disposable{
     Vector2 getWorldMapOffset();
     float getWorldMapScale();
     MapMarkerList getMapMarkers();
+    int getNumStimpacks();
+    int getNumDrBags();
+    int getNumRadAway();
+    int getNumRadX();
+    boolean isLimbDamaged();
 }

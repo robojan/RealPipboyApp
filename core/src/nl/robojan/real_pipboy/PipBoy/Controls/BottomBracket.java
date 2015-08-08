@@ -3,7 +3,7 @@ package nl.robojan.real_pipboy.PipBoy.Controls;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 
 /**
  * Created by s120330 on 28-7-2015.

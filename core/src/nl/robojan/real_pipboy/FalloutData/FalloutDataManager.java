@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import nl.robojan.real_pipboy.Connection.ConnectionManager;
 import nl.robojan.real_pipboy.Connection.IPacketHandler;
 import nl.robojan.real_pipboy.Connection.Packets.*;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.Context;
 
 /**
@@ -37,6 +38,7 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
     private float mWorldMapScale;
     private String mWorldMapTexture;
     private MapMarkerList mMapMarkers;
+    private int mNumStimpacks, mNumDrBags, mNumRadAway, mNumRadX;
 
     public FalloutDataManager() {
         mPlayerName = "Player name";
@@ -205,6 +207,23 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
 
     private void setInventory(SetInventoryPacket packet) {
         mItems = packet.getItems();
+        mNumStimpacks = 0;
+        mNumDrBags = 0;
+        for(Item i : mItems.list) {
+            if(i.getId() == Constants.STIMPACK_REFID) { // Stimpak id
+                mNumStimpacks = i.getAmount();
+            }
+            if(i.getId() == Constants.DRBAG_REFID) { // Docter's bag id
+                mNumDrBags = i.getAmount();
+            }
+            if(i.getId() == Constants.RADAWAY_REFID) { // RadAway id
+                mNumRadAway = i.getAmount();
+            }
+            if(i.getId() == Constants.RADX_REFID) { // Rad-X id
+                mNumRadX = i.getAmount();
+            }
+        }
+
     }
 
     private void setNotes(SetNotesPacket packet) {
@@ -477,5 +496,32 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
     @Override
     public MapMarkerList getMapMarkers() {
         return mMapMarkers;
+    }
+
+    @Override
+    public int getNumStimpacks() {
+        return mNumStimpacks;
+    }
+
+    @Override
+    public int getNumDrBags() {
+        return mNumDrBags;
+    }
+
+    @Override
+    public int getNumRadAway() {
+        return mNumRadAway;
+    }
+
+    @Override
+    public int getNumRadX() {
+        return mNumRadX;
+    }
+
+    @Override
+    public boolean isLimbDamaged() {
+        return getLimbStatus(Limb.HEAD) != 1 || getLimbStatus(Limb.LEFT_ARM) != 1 ||
+                getLimbStatus(Limb.RIGHT_ARM) != 1 || getLimbStatus(Limb.LEFT_LEG) != 1 ||
+                getLimbStatus(Limb.RIGHT_LEG) != 1 || getLimbStatus(Limb.TORSO) != 1;
     }
 }

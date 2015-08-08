@@ -9,7 +9,7 @@ import nl.robojan.real_pipboy.Context;
 import nl.robojan.real_pipboy.FalloutData.IFalloutData;
 import nl.robojan.real_pipboy.FalloutData.MapMarker;
 import nl.robojan.real_pipboy.FalloutData.MapMarkerList;
-import nl.robojan.real_pipboy.PipBoy.Constants;
+import nl.robojan.real_pipboy.Constants;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.Image;
 import nl.robojan.real_pipboy.PipBoy.Controls.Rect;
@@ -212,6 +212,13 @@ public class WorldMapMenu extends Rect {
         mMapMarkersImage.clear();
     }
 
+    public MapMarker getSelectedMarker() {
+        if(mSelectedMarker == null) {
+            return null;
+        }
+        return mSelectedMarker.getMarker();
+    }
+
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         mOldMapPos = mMap.getPos();
@@ -222,7 +229,8 @@ public class WorldMapMenu extends Rect {
     @Override
     public boolean pinch(Vector2 ip1, Vector2 ip2, Vector2 p1, Vector2 p2) {
         boolean handled = super.pinch(ip1, ip2, p1, p2);
-        if(!handled && getSize().contains(ip1) && getSize().contains(ip2)) {
+        if(!handled && isEnabled() && isVisible() && getSize().contains(ip1) &&
+                getSize().contains(ip2) ) {
             handled = true;
 
             float id = new Vector2(ip1).sub(ip2).len();
@@ -256,7 +264,7 @@ public class WorldMapMenu extends Rect {
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         boolean handled = super.pan(x, y, deltaX, deltaY);
-        if(!handled && getSize().contains(x,y)) {
+        if(!handled && isEnabled() && isVisible() && getSize().contains(x,y)) {
             mPanning = true;
             handled = true;
         }

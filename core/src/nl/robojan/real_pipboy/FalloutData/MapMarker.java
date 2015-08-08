@@ -33,13 +33,15 @@ public class MapMarker {
     private String mReputation;
     private short mType;
     private short mFlags;
+    private int mId;
 
-    public MapMarker(Vector3 pos, String name, String reputation, short type, short flags) {
+    public MapMarker(int id, Vector3 pos, String name, String reputation, short type, short flags) {
         mPos = pos;
         mName = name;
         mReputation = reputation;
         mType = type;
         mFlags = flags;
+        mId = id;
     }
 
     public String getIcon(boolean inverted) {
@@ -176,4 +178,11 @@ public class MapMarker {
         }
     }
 
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
 }
