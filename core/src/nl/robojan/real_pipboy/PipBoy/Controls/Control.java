@@ -178,8 +178,7 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
             child.load();
     }
 
-    public void addChild(Control child)
-    {
+    public void addChild(Control child) {
         child.setParent(this);
         mChilds.add(child);
         sortChildren();
@@ -319,10 +318,10 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
         }
     }
 
-    public boolean fireClickableEvent() {
+    public boolean fireClickableEvent(boolean secondary) {
         for(ClickableListenerItem i : mClickableListeners)
         {
-            i.listener.onClickableEvent(this, i.user);
+            i.listener.onClickableEvent(this, i.user, secondary);
         }
         return mClickableListeners.size != 0;
     }
@@ -338,7 +337,7 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
     }
 
     public interface ClickableListener {
-        void onClickableEvent(Control source, Object user);
+        void onClickableEvent(Control source, Object user, boolean secondary);
     }
 
     @Override
@@ -367,7 +366,7 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
         y += mOrigin.y;
 
         if(isEnabled() && getSize().contains(x, y)){
-            fired = fireClickableEvent();
+            fired = fireClickableEvent(false);
             playClickSound();
         }
         x -= mX;
@@ -384,16 +383,29 @@ public abstract class Control implements Disposable, InputProcessor, GestureList
 
     @Override
     public boolean longPress(float x, float y) {
+        boolean fired = false;
+
+        if(isClipping() && !getSize().contains(x,y)) {
+            return false;
+        }
+
+        x += mOrigin.x;
+        y += mOrigin.y;
+
+        if(isEnabled() && getSize().contains(x, y)){
+            fired = fireClickableEvent(true);
+            playClickSound();
+        }
         x -= mX;
         y -= mY;
         for(Control child : mChilds)
         {
-            if(!child.getSize().contains(x, y))
-                continue;
+            //if(!child.getSize().contains(x, y))
+            //    continue;
             if(child.longPress(x, y))
                 return true;
         }
-        return false;
+        return fired;
     }
 
     @Override

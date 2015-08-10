@@ -110,7 +110,7 @@ public class StringSelectionBox extends Control {
 
     private ClickableListener mArrowListener = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             if(source == mLeftArrow) {
                 mSelected -= 1;
                 if(mSelected < 0 && mLooping) {

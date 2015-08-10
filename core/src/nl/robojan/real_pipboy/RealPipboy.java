@@ -1,5 +1,6 @@
 package nl.robojan.real_pipboy;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -92,7 +93,7 @@ public class RealPipboy extends ApplicationAdapter {
 
         FileTransferHandler.getInstance().init();
 
-		//Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
 		mContext.foData = new FalloutDataTest();
 

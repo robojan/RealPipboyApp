@@ -130,6 +130,8 @@ public class InventoryMenu extends Control {
                 IM_ItemInfoRect.setItem(null);
                 IM_ItemIcon.setFile(null);
                 IM_ItemIconBadge.setFile(null);
+                mSelectedItem = null;
+                IM_InventoryList.highLightItem(-1);
             }
         }
 
@@ -143,33 +145,38 @@ public class InventoryMenu extends Control {
 
         private ClickableListener mItemClickListener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
                 if(!Item.class.isAssignableFrom(user.getClass()) ||
                         !ItemListItem.class.isAssignableFrom(source.getClass())) {
                     return;
                 }
                 Item item = (Item) user;
                 ItemListItem element = (ItemListItem) source;
-                if(mSelectedItem == item) {
-                    if(item.isEquippable() ) {
-                        if(item.isEquipped()) {
-                            ConnectionManager.getInstance().send(
-                                    new DoActionPacket(DoActionPacket.ACTION_UNEQUIPITEM,
-                                            item.getId(), 0, 0));
-                        } else {
+                if(secondary) {
+                    ConnectionManager.getInstance().send(new DoActionPacket(
+                            DoActionPacket.ACTION_DROPITEM, item.getId(), item.getAmount()));
+                } else {
+                    if (mSelectedItem == item) {
+                        if (item.isEquippable()) {
+                            if (item.isEquipped()) {
+                                ConnectionManager.getInstance().send(
+                                        new DoActionPacket(DoActionPacket.ACTION_UNEQUIPITEM,
+                                                item.getId(), 0, 0));
+                            } else {
+                                ConnectionManager.getInstance().send(
+                                        new DoActionPacket(DoActionPacket.ACTION_EQUIPITEM,
+                                                item.getId(), 0, 0));
+                            }
+                        } else if (item instanceof AidItem) {
                             ConnectionManager.getInstance().send(
                                     new DoActionPacket(DoActionPacket.ACTION_EQUIPITEM,
-                                            item.getId(), 0, 0));
+                                            item.getId(), 0, 1));
                         }
-                    } else if(item instanceof AidItem) {
-                        ConnectionManager.getInstance().send(
-                                new DoActionPacket(DoActionPacket.ACTION_EQUIPITEM,
-                                        item.getId(), 0, 1));
+                    } else {
+                        mSelectedItem = item;
+                        IM_InventoryList.highLightItem(element, true);
+                        displayItem(item);
                     }
-                } else {
-                    mSelectedItem = item;
-                    IM_InventoryList.highLightItem(element, true);
-                    displayItem(item);
                 }
             }
         };

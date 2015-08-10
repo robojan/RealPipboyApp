@@ -109,7 +109,7 @@ public class TextInputBox extends TextBox {
 
     private ClickableListener mBoxClickListener = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             Input.TextInputListener listener = new Input.TextInputListener() {
                 @Override
                 public void input(String text) {

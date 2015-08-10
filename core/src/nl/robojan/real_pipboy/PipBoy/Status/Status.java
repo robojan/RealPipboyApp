@@ -113,7 +113,7 @@ public class Status extends Control {
         // make buttons exclusive
         ClickableListener modeButtonsListener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
                 if(source == stats_CND_button){
                     setMode(StatusMode.CND);
                 } else if(source == stats_RAD_button){
@@ -163,7 +163,7 @@ public class Status extends Control {
 
     private ClickableListener mConsumeableListener = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             ConnectionManager conn = ConnectionManager.getInstance();
             if(source == stats_stimpak_button) {
                 conn.send(new DoActionPacket(DoActionPacket.ACTION_USESTIMPACK));

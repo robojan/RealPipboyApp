@@ -140,7 +140,7 @@ public class StatusMenu extends Control {
         // Create listener
         Control.ClickableListener pageListener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
                 if(source == stats_tailline_status)
                 {
                     setPage(Page.STATUS);
@@ -464,7 +464,7 @@ public class StatusMenu extends Control {
 
     private Control.ClickableListener onSPECIALClick = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             if(user.getClass() != Integer.class || source.getClass() != StatsItem.class)
                 return;
             int index = ((Integer)user);
@@ -474,7 +474,7 @@ public class StatusMenu extends Control {
 
     private Control.ClickableListener onSkillsClick = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             if(user.getClass() != Integer.class || source.getClass() != StatsItem.class)
                 return;
             int index = ((Integer)user);
@@ -484,7 +484,7 @@ public class StatusMenu extends Control {
 
     private Control.ClickableListener onPerksClick = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             if(user.getClass() != Integer.class || source.getClass() != StatsItem.class)
                 return;
             int index = ((Integer)user);

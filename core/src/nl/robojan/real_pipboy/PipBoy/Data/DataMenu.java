@@ -139,7 +139,7 @@ public class DataMenu extends Control {
 
         private ClickableListener mButtonAListener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
                 MapMarker marker = mWorldMap.getSelectedMarker();
                 switch(mCurrentTab) {
                     case 1:
@@ -165,14 +165,14 @@ public class DataMenu extends Control {
 
         private ClickableListener mButtonXListener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
 
             }
         };
 
         private ClickableListener mButtonYListener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
 
             }
         };
@@ -374,7 +374,7 @@ public class DataMenu extends Control {
 
         private ClickableListener mQuestClickableListener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
                 if(!Quest.class.isAssignableFrom(user.getClass()) ||
                         !DataItemMarker.class.isAssignableFrom(source.getClass())) {
                     return;
@@ -389,7 +389,7 @@ public class DataMenu extends Control {
 
         private ClickableListener mNoteClickableListener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
                 if(!Note.class.isAssignableFrom(user.getClass()) ||
                         !DataItemMarker.class.isAssignableFrom(source.getClass())) {
                     return;
@@ -408,7 +408,7 @@ public class DataMenu extends Control {
 
         private ClickableListener mRadioClickableListener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
                 if(!Radio.class.isAssignableFrom(user.getClass()) ||
                         !DataItemMarker.class.isAssignableFrom(source.getClass())) {
                     return;

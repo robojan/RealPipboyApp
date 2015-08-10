@@ -71,7 +71,7 @@ public class TabLine extends Control {
 
     private ClickableListener mButtonsListener = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             if(source.getClass() != TabButton.class || user.getClass() != Integer.class)
                 return;
             setCurrentTab(((Integer)user));

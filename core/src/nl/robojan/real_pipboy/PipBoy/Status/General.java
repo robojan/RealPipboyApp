@@ -151,7 +151,7 @@ public class General extends Control {
 
     private ClickableListener mGenRepHandler = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             if(mMode == Mode.GENERAL) {
                 setMode(Mode.REPUTATION);
             } else {
@@ -162,7 +162,7 @@ public class General extends Control {
 
     private ClickableListener mReputationHandler = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             if(user.getClass() != Reputation.class)
                 return;
             Reputation rep = (Reputation)user;

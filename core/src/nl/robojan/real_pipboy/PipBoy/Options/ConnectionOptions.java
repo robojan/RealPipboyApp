@@ -49,7 +49,7 @@ public class ConnectionOptions extends Control {
 
     private ClickableListener mOnConnectButtonClick = new ClickableListener() {
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             if(mTCPConnected) {
                 ConnectionManager.getInstance().disconnect();
             } else {

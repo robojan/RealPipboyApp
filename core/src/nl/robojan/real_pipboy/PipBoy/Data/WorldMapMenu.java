@@ -420,7 +420,7 @@ public class WorldMapMenu extends Rect {
         }
 
         @Override
-        public void onClickableEvent(Control source, Object user) {
+        public void onClickableEvent(Control source, Object user, boolean secondary) {
             if(!isVisible() || !isEnabled()) {
                 return;
             }

@@ -277,6 +277,31 @@ public class ListBox extends Control{
     }
 
     @Override
+    public boolean longPress(float x, float y) {
+        boolean handled = super.longPress(x, y);
+
+        x -= mX;
+        y -= mY;
+
+        if(!handled) {
+            // Go through the items
+            for(int i = 0; i < mItems.size(); i++) {
+                ListBoxItem item = mItems.get(i);
+                if(item.getTop() >= 0 - item.getHeight()/2 &&
+                        item.getTop() <= mHeight - item.getHeight()/2) {
+                    handled = item.longPress(x, y);
+                    if (handled)
+                        break;
+                }
+            }
+        } else {
+            setOffsetFromScrollbar();
+        }
+
+        return handled;
+    }
+
+    @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         boolean handled = super.pan(x, y, deltaX, deltaY);
 

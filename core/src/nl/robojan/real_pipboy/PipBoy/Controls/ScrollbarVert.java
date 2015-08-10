@@ -105,7 +105,7 @@ public class ScrollbarVert extends Control {
     public void createArrowListeners(){
         ClickableListener listener = new ClickableListener() {
             @Override
-            public void onClickableEvent(Control source, Object user) {
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
                 if(!isEnabled())
                     return;
                 if(source == mVertUp) {
