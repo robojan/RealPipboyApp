@@ -364,21 +364,21 @@ public class FalloutDataTest implements IFalloutData {
         items.add(new WeaponItem(0l, "9mm Pistol", 1, 16, 1.5f,
                 "textures/interface/icons/pipboyimages/weapons/weapons_9mm_pistol.dds",
                 "textures/interface/icons/typeicons/weap_skill_icon_sm_arms.dds",
-                true, true, 22, 7, 0.8f, 2));
+                true, true, 22, 7, 0.8f, 2, "9mm(0/0)"));
         items.add(new WeaponItem(1l,"Binoculars", 1, 50, 1.5f,
                 "textures/interface/icons/pipboyimages/items/items_binoculars.dds",
                 "textures/interface/icons/typeicons/weap_skill_icon_melee.dds",
-                true, false, 0, 0, 1, 0));
+                true, false, 0, 0, 1, 0, "--"));
         items.add(new WeaponItem(2l,"Boxing Gloves", 1, 6, 6.0f,
                 "textures/interface/icons/pipboyimages/weapons/weapons_boxing_gloves.dds",
                 "textures/interface/icons/typeicons/weap_skill_icon_unarmed.dds",
-                false, false, 2, 2, 0.15f, 1, "Inflicts Fatigue Damage (KO)"));
+                false, false, 2, 2, 0.15f, 1, "Inflicts Fatigue Damage (KO)", "--"));
         items.add(new ApparelItem(3l,"Armored Vault 13 Jumpsuit", 1, 70, 15,
                 "textures/interface/icons/pipboyimages/apparel/apparel_armored_vault13_jumpsuit.dds",
-                true, false, 0, 8, 1));
+                true, false, 0, 8, 1, ""));
         items.add(new ApparelItem(4l,"Lightweight Metal Armor", 1, 460, 20,
                 "textures/interface/icons/pipboyimages/apparel/apperal_metal_armor.dds",
-                true, false, "AGL -1", 0, 12, 1));
+                true, false, "AGL -1", 0, 12, 1, ""));
         items.add(new AidItem(5l,"Bleak Venom", 5, 5, 2.5f,
                 "textures/interface/icons/pipboyimages/items/item_bleak_venom.dds",
                 true, false, "HP -15(10s)"));

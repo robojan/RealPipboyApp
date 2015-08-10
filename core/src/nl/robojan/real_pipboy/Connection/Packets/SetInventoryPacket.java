@@ -93,6 +93,8 @@ public class SetInventoryPacket extends DataPacket {
 
             float dps, dam, cnd, dr, dt;
             int strReq;
+            short strLen;
+            String str;
             switch(itemType) {
 
             default:
@@ -105,15 +107,21 @@ public class SetInventoryPacket extends DataPacket {
                 dam = buffer.getFloat();
                 cnd = buffer.getFloat();
                 strReq = buffer.getInt();
+                strLen = buffer.getShort();
+                str = new String(data, buffer.position(), strLen, charset);
+                buffer.position(buffer.position() + strLen);
                 mItems.add(new WeaponItem(id,name, amount, value, weight, icon,badge, equippable,
-                        equipped, dps, dam, cnd, strReq, effects));
+                        equipped, dps, dam, cnd, strReq, effects, str));
                 break;
             case ITEMTYPE_ARMOR:
                 dr = buffer.getFloat();
                 dt = buffer.getFloat();
                 cnd = buffer.getFloat();
-                mItems.add(new ApparelItem(id, name, amount, value, weight, icon,badge, equippable,
-                        equipped, effects, dr, dt, cnd));
+                strLen = buffer.getShort();
+                str = new String(data, buffer.position(), strLen, charset);
+                buffer.position(buffer.position() + strLen);
+                mItems.add(new ApparelItem(id, name, amount, value, weight, icon, badge, equippable,
+                        equipped, effects, dr, dt, cnd, str));
                 break;
             case ITEMTYPE_AID:
                 mItems.add(new AidItem(id, name, amount, value, weight, icon, badge, equippable,
@@ -149,9 +157,9 @@ public class SetInventoryPacket extends DataPacket {
             if(item.getEffect() != null)
                 itemsSize += item.getEffect().length();
             if(item instanceof WeaponItem) {
-                itemsSize += 16;
+                itemsSize += 18 + ((WeaponItem) item).getAmmo().length();
             } else if(item instanceof ApparelItem) {
-                itemsSize += 12;
+                itemsSize += 14 + ((ApparelItem) item).getArmorType().length();
             } else if(item instanceof AidItem) {
                 itemsSize += 0;
             } else if(item instanceof MiscItem) {
@@ -177,10 +185,10 @@ public class SetInventoryPacket extends DataPacket {
             int itemSize = 28;
             int itemType = ITEMTYPE_UNK;
             if(item instanceof WeaponItem) {
-                detailSize += 16;
+                detailSize += 18 + ((WeaponItem) item).getAmmo().length();
                 itemType = ITEMTYPE_WEAPON;
             } else if(item instanceof ApparelItem) {
-                detailSize += 12;
+                detailSize += 14 + ((ApparelItem) item).getArmorType().length();
                 itemType = ITEMTYPE_ARMOR;
             } else if(item instanceof AidItem) {
                 detailSize += 0;
@@ -240,12 +248,16 @@ public class SetInventoryPacket extends DataPacket {
                     buffer.putFloat(((WeaponItem)item).getDPS());
                     buffer.putFloat(((WeaponItem)item).getDAM());
                     buffer.putFloat(((WeaponItem)item).getCondition());
-                    buffer.putInt(((WeaponItem)item).getStrReq());
+                    buffer.putInt(((WeaponItem) item).getStrReq());
+                    buffer.putShort((short) ((WeaponItem) item).getAmmo().length());
+                    enc.encode(CharBuffer.wrap(((WeaponItem) item).getAmmo()), buffer, true);
                     break;
                 case ITEMTYPE_ARMOR:
                     buffer.putFloat(((ApparelItem) item).getDR());
                     buffer.putFloat(((ApparelItem) item).getDT());
                     buffer.putFloat(((ApparelItem) item).getCondition());
+                    buffer.putShort((short) ((ApparelItem) item).getArmorType().length());
+                    enc.encode(CharBuffer.wrap(((ApparelItem) item).getArmorType()), buffer, true);
                     break;
             }
             buffer.position(bufferStart + itemSize + 2);

@@ -131,6 +131,7 @@ public class ItemStatsDisplay extends Control {
             mDamageResistInfo.setVisible(false);
             mStrengthReqInfo.setVisible(false);
             mAmmoInfo.setVisible(false);
+            mEffectsInfo.setVisible(false);
             return;
         }
         float weight = item.getWeight();
@@ -145,7 +146,7 @@ public class ItemStatsDisplay extends Control {
             mDAMInfo.setValue(String.format("%.0f", weapon.getDAM()));
             mConditionMeter.setValue(weapon.getCondition());
             setConditionArrowPosition(true);
-            mAmmoInfo.setTitle("TODO: ammo --");
+            mAmmoInfo.setTitle(weapon.getAmmo());
             mStrengthReqInfo.setValue(Integer.toString(weapon.getStrReq()));
             mEffectsInfo.setY(2 * mHeight / 3);
 
@@ -171,7 +172,8 @@ public class ItemStatsDisplay extends Control {
             }
             setConditionArrowPosition(false);
             mEffectsInfo.setY(2 * mHeight / 3);
-            mAmmoInfo.setTitle("TODO: armour type");
+            mAmmoInfo.setTitle(apparel.getArmorType());
+            mAmmoInfo.setVisible(!apparel.getArmorType().isEmpty());
 
             mConditionMeter.setVisible(true);
             mCNDArrows.setVisible(true);
@@ -179,7 +181,6 @@ public class ItemStatsDisplay extends Control {
             mDPSInfo.setVisible(false);
             mDAMInfo.setVisible(false);
             mDamageResistInfo.setVisible(true);
-            mAmmoInfo.setVisible(true);
             mStrengthReqInfo.setVisible(false);
         } else if(AidItem.class.isAssignableFrom(item.getClass())) {
             mEffectsInfo.setY( mHeight / 3);
