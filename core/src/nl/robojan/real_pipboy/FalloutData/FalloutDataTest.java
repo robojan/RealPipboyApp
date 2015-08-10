@@ -493,4 +493,9 @@ public class FalloutDataTest implements IFalloutData {
     public boolean isLimbDamaged() {
         return true;
     }
+
+    @Override
+    public RadioList getRadioStations() {
+        return new RadioList();
+    }
 }

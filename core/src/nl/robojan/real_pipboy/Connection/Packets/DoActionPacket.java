@@ -17,6 +17,7 @@ public class DoActionPacket extends DataPacket {
     public static final int ACTION_UNEQUIPITEM = 5;
     public static final int ACTION_FASTTRAVEL = 6;
     public static final int ACTION_SETACTIVEQUEST = 7;
+    public static final int ACTION_TUNERADIO = 8;
 
     private int mId;
     private long[] mParam = new long[4];

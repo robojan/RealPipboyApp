@@ -66,7 +66,7 @@ public class ConnectionManager {
         types.registerClass((byte) 8, SetInventoryPacket.class);
         types.registerClass((byte) 9, SetQuestsPacket.class);
         types.registerClass((byte) 10, SetNotesPacket.class);
-
+        types.registerClass((byte) 11, SetRadioPacket.class);
         types.registerClass((byte) 12, SetWorldInfoPacket.class);
         types.registerClass((byte) 13, SendFileDataPacket.class);
         types.registerClass((byte) 14, SetMapMarkersPacket.class);

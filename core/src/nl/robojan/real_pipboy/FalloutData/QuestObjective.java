@@ -1,5 +1,7 @@
 package nl.robojan.real_pipboy.FalloutData;
 
+import com.badlogic.gdx.utils.Array;
+
 import java.util.Objects;
 
 /**
@@ -9,6 +11,7 @@ public class QuestObjective {
     private String mText;
     private int mObjectiveID;
     private int mFlags;
+    private Array<QuestTarget> mTargets = new Array<QuestTarget>(1);
 
     public QuestObjective(int id, String text, int flags) {
         mObjectiveID = id;
@@ -64,12 +67,21 @@ public class QuestObjective {
         mFlags = flags;
     }
 
+    public void addTarget(QuestTarget target) {
+        mTargets.add(target);
+    }
+
+    public Array<QuestTarget> getTargets() {
+        return mTargets;
+    }
+
     public boolean equivalent(Object obj) {
         if (obj == null || !(QuestObjective.class.isAssignableFrom(obj.getClass())))
             return false;
         QuestObjective other = (QuestObjective) obj;
         return (Objects.equals(this.mText, other.mText) &&
                 this.mObjectiveID == other.mObjectiveID &&
+                this.mTargets.equals(other.mTargets) &&
                 this.mFlags == other.mFlags);
     }
 }

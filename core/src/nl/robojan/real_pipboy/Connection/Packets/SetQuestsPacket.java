@@ -1,5 +1,7 @@
 package nl.robojan.real_pipboy.Connection.Packets;
 
+import com.badlogic.gdx.math.Vector3;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -8,6 +10,7 @@ import java.nio.charset.CharsetEncoder;
 import nl.robojan.real_pipboy.FalloutData.Quest;
 import nl.robojan.real_pipboy.FalloutData.QuestList;
 import nl.robojan.real_pipboy.FalloutData.QuestObjective;
+import nl.robojan.real_pipboy.FalloutData.QuestTarget;
 
 /**
  * Created by s120330 on 29-7-2015.
@@ -61,7 +64,17 @@ public class SetQuestsPacket extends DataPacket {
                     text = new String(data, buffer.position(), textLen, charset);
                 buffer.position(buffer.position() + textLen);
 
-                quest.addObjective(new QuestObjective(objectiveID, text, objectiveFlags));
+                QuestObjective objective = new QuestObjective(objectiveID, text, objectiveFlags);
+
+                short numTargets = buffer.getShort();
+                for(int k = 0; k < numTargets; k++) {
+                    int targetID = buffer.getInt();
+                    float x = buffer.getFloat();
+                    float y = buffer.getFloat();
+                    float z = buffer.getFloat();
+                    objective.addTarget(new QuestTarget(targetID, new Vector3(x, y, z)));
+                }
+                quest.addObjective(objective);
             }
             mQuests.add(quest);
         }
@@ -76,9 +89,12 @@ public class SetQuestsPacket extends DataPacket {
             if(quest.getName() != null)
                 itemsSize += quest.getName().length();
             for(QuestObjective objective : quest.getObjectives()) {
-                itemsSize += 10;
+                itemsSize += 12;
                 if(objective.getText() != null) {
                     itemsSize += objective.getText().length();
+                }
+                for(QuestTarget target :objective.getTargets()) {
+                    itemsSize += 4 * 4;
                 }
             }
         }
@@ -112,6 +128,13 @@ public class SetQuestsPacket extends DataPacket {
                 } else {
                     buffer.putShort((short) objective.getText().length());
                     enc.encode(CharBuffer.wrap(objective.getText()), buffer, true);
+                }
+                buffer.putShort((short)objective.getTargets().size);
+                for(QuestTarget target : objective.getTargets()) {
+                    buffer.putInt(target.id);
+                    buffer.putFloat(target.pos.x);
+                    buffer.putFloat(target.pos.y);
+                    buffer.putFloat(target.pos.z);
                 }
             }
         }

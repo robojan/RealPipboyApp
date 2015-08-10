@@ -66,6 +66,7 @@ public class DataPacket {
     private void readPacket(byte[] buffer, int off, int len) {
         int dataSize = mHeader.getDataSize();
         assert(len >= dataSize);
+        mData = new byte[dataSize];
         System.arraycopy(buffer, off,  mData, 0, dataSize);
     }
 

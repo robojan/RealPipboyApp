@@ -78,4 +78,5 @@ public interface IFalloutData extends Disposable{
     int getNumRadAway();
     int getNumRadX();
     boolean isLimbDamaged();
+    RadioList getRadioStations();
 }

@@ -39,6 +39,7 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
     private String mWorldMapTexture;
     private MapMarkerList mMapMarkers;
     private int mNumStimpacks, mNumDrBags, mNumRadAway, mNumRadX;
+    private RadioList mRadioStations;
 
     public FalloutDataManager() {
         mPlayerName = "Player name";
@@ -67,6 +68,7 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
         mWorldMapScale = 1;
         mWorldMapTexture = "";
         mMapMarkers = new MapMarkerList();
+        mRadioStations = new RadioList();
 
         ConnectionManager conn = ConnectionManager.getInstance();
         PacketTypes pt = PacketTypes.getInstance();
@@ -79,6 +81,7 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
         conn.registerPacketHandler(pt.getType(SetNotesPacket.class), this);
         conn.registerPacketHandler(pt.getType(SetQuestsPacket.class), this);
         conn.registerPacketHandler(pt.getType(SetMapMarkersPacket.class), this);
+        conn.registerPacketHandler(pt.getType(SetRadioPacket.class), this);
     }
 
     @Override
@@ -94,6 +97,7 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
         conn.deregisterPacketHandler(pt.getType(SetNotesPacket.class), this);
         conn.deregisterPacketHandler(pt.getType(SetQuestsPacket.class), this);
         conn.deregisterPacketHandler(pt.getType(SetMapMarkersPacket.class), this);
+        conn.deregisterPacketHandler(pt.getType(SetRadioPacket.class), this);
     }
 
     @Override
@@ -116,7 +120,9 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
         } else if (packet instanceof SetQuestsPacket) {
             setQuests((SetQuestsPacket) packet);
         } else if (packet instanceof SetMapMarkersPacket) {
-            setMapMarkers((SetMapMarkersPacket)packet);
+            setMapMarkers((SetMapMarkersPacket) packet);
+        } else if (packet instanceof SetRadioPacket) {
+            setRadioStations((SetRadioPacket) packet);
         } else {
             Gdx.app.error("DATA", "Unknown packet received: " + packet.toString());
         }
@@ -236,6 +242,10 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
 
     private void setMapMarkers(SetMapMarkersPacket packet) {
         mMapMarkers = packet.getMarkers();
+    }
+
+    private void setRadioStations(SetRadioPacket packet) {
+        mRadioStations = packet.getStations();
     }
 
     @Override
@@ -523,5 +533,10 @@ public class FalloutDataManager implements IFalloutData, IPacketHandler {
         return getLimbStatus(Limb.HEAD) != 1 || getLimbStatus(Limb.LEFT_ARM) != 1 ||
                 getLimbStatus(Limb.RIGHT_ARM) != 1 || getLimbStatus(Limb.LEFT_LEG) != 1 ||
                 getLimbStatus(Limb.RIGHT_LEG) != 1 || getLimbStatus(Limb.TORSO) != 1;
+    }
+
+    @Override
+    public RadioList getRadioStations() {
+        return mRadioStations;
     }
 }

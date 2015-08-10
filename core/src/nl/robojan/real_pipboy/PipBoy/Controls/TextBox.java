@@ -144,6 +144,7 @@ public class TextBox extends Control {
 
         addChild(mBox);
         addChild(mButtonText);
+        setVisible(mVisible);
     }
 
     @Override

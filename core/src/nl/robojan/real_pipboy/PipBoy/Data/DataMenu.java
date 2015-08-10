@@ -15,6 +15,8 @@ import nl.robojan.real_pipboy.FalloutData.NoteList;
 import nl.robojan.real_pipboy.FalloutData.Quest;
 import nl.robojan.real_pipboy.FalloutData.QuestList;
 import nl.robojan.real_pipboy.Constants;
+import nl.robojan.real_pipboy.FalloutData.Radio;
+import nl.robojan.real_pipboy.FalloutData.RadioList;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Controls.ListBox;
 import nl.robojan.real_pipboy.PipBoy.Controls.ListBoxItem;
@@ -59,10 +61,12 @@ public class DataMenu extends Control {
         private HeadlineRect mHeadlineRect;
 
         private WorldMapMenu mWorldMap;
+        private TextBox mLocalMap;
 
         private ListBox mQuestsList;
         private ListBox mNotesList;
         private ListBox mRadioStationList;
+
 
         private DataRect mDataRect;
 
@@ -71,6 +75,9 @@ public class DataMenu extends Control {
         private TextBox mButtonY;
 
         private int mCurrentTab = -1;
+
+        private RadioList mStations = new RadioList();
+        private Radio mSelectedRadio = null;
 
         private NoteList mNotes = new NoteList();
         private Note mSelectedNote = null;
@@ -99,6 +106,10 @@ public class DataMenu extends Control {
             mRadioStationList = new ListBox(-15, 75, 400, 468);
 
             mWaveformRect = new WaveformRect(500, 125, 350, 350);
+
+            mLocalMap = new TextBox(width/2,height/2, "Local map not implemented. \n" +
+                    "Does someone have ideas how to \ngenerate the local map or fetch\n" +
+                    "the local map images\nfrom the game.", Align.center);
 
             mWorldMap = new WorldMapMenu(0, 50, 855, 500);
             mWorldMap.setVisible(false);
@@ -173,8 +184,10 @@ public class DataMenu extends Control {
                 mButtonX.setY(mQuestsList.getY());
                 mButtonX.setText(GameString.getString(BUTTONX_STRINGS[0]));
                 mButtonY.setVisible(false);
+                if(!containsChild(mLocalMap))
+                    addChild(mLocalMap, true);
             } else {
-
+                removeChild(mLocalMap);
             }
         }
 
@@ -235,7 +248,7 @@ public class DataMenu extends Control {
                     addChild(mRadioStationList, true);
                 if(!containsChild(mWaveformRect))
                     addChild(mWaveformRect, true);
-                mButtonA.setVisible(true);
+                mButtonA.setVisible(false);
                 mButtonA.setText(GameString.getString(BUTTONA_STRINGS[3]));
                 mButtonX.setVisible(false);
                 mDataRect.setY(mButtonA.getBottom());
@@ -319,7 +332,6 @@ public class DataMenu extends Control {
                     quests = new QuestList();
                 }
                 mQuests = quests;
-                ListBoxItem selectedItem = mQuestsList.getSelectedItem();
                 mQuestsList.clearItems();
                 for(Quest quest : quests.list) {
                     DataItemMarker item = new DataItemMarker(0,0,quest.getName(),
@@ -334,7 +346,27 @@ public class DataMenu extends Control {
                         mSelectedQuest = quest;
                     }
                 }
-                mQuestsList.highLightItem(selectedItem, false);
+            }
+
+            RadioList stations = data.getRadioStations();
+            if(!mStations.equivalent(stations)) {
+                if(stations == null) {
+                    stations = new RadioList();
+                }
+                mStations = stations;
+                mRadioStationList.clearItems();
+                for(Radio radio : mStations.list) {
+                    DataItemMarker item = new DataItemMarker(0, 0, radio.getName(),
+                            radio.isPlaying(), radio.isActive(), false);
+                    item.setClickSound("sound/fx/ui/pipboy/ui_pipboy_tuner.wav");
+                    item.addClickableListener(mRadioClickableListener, radio);
+                    mRadioStationList.addItem(item);
+                    if(mSelectedRadio != null && radio.getId() == mSelectedRadio.getId()) {
+                        mRadioStationList.highLightItem(item, true);
+                        mSelectedRadio = radio;
+                    }
+                }
+                mWaveformRect.setPlaying(stations.isPlaying());
             }
 
             super.update(context);
@@ -371,6 +403,27 @@ public class DataMenu extends Control {
                 element.setSelected(true);
                 mNotesList.highLightItem(element, false);
                 mDataRect.displayNote(note);
+            }
+        };
+
+        private ClickableListener mRadioClickableListener = new ClickableListener() {
+            @Override
+            public void onClickableEvent(Control source, Object user) {
+                if(!Radio.class.isAssignableFrom(user.getClass()) ||
+                        !DataItemMarker.class.isAssignableFrom(source.getClass())) {
+                    return;
+                }
+                Radio radio = (Radio) user;
+                DataItemMarker element = (DataItemMarker) source;
+                if(!radio.isActive())
+                    return;
+                if(mSelectedRadio == radio) {
+                    ConnectionManager.getInstance().send(new DoActionPacket(
+                            DoActionPacket.ACTION_TUNERADIO, radio.isPlaying() ? 0 :radio.getId()));
+                } else {
+                    mRadioStationList.highLightItem(element, false);
+                    mSelectedRadio = radio;
+                }
             }
         };
     }
