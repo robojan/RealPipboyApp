@@ -63,6 +63,7 @@ public class Image extends Control {
             if(mFile == null) {
                 result = ((Image) o).mFile == null ? 0 : 1;
             } else {
+                if(((Image) o).mFile == null) return 1;
                 result = mFile.compareTo(((Image) o).mFile);
             }
         }
