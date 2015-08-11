@@ -3,6 +3,8 @@ package nl.robojan.real_pipboy.PipBoy.Options;
 import com.badlogic.gdx.graphics.Color;
 
 import nl.robojan.real_pipboy.Context;
+import nl.robojan.real_pipboy.PipBoy.Controls.Control;
+import nl.robojan.real_pipboy.PipBoy.Controls.Image;
 import nl.robojan.real_pipboy.PipBoy.Controls.Rect;
 import nl.robojan.real_pipboy.PipBoy.Controls.StringSelectionBox;
 import nl.robojan.real_pipboy.PipBoy.Controls.Text;
@@ -12,7 +14,10 @@ import nl.robojan.real_pipboy.Settings;
  * Created by s120330 on 2-8-2015.
  */
 public class GraphicsOptions extends Rect {
-
+    private static final String[] CHECKBOXIMAGES = {
+            "textures/interface/shared/marker/square.dds",
+            "textures/interface/shared/marker/square_filled.dds"
+    };
     private static final String[] PIPBOYCOLOROPTIONS = { "GREEN", "BLUE", "AMBER", "WHITE",
             "RED"} ;
     private static final Color[] PIPBOYCOLOROPTIONSVALUES = {
@@ -24,6 +29,8 @@ public class GraphicsOptions extends Rect {
     };
 
     private Text mPipboyColorLabel;
+    private Text mStretchLabel;
+    private Image mStretchCheckbox;
     private StringSelectionBox mPipboyColorSelector;
     private int mSelectedColorOption = -1;
 
@@ -50,6 +57,21 @@ public class GraphicsOptions extends Rect {
         }
         mPipboyColorSelector.setSelected(mSelectedColorOption);
         addChild(mPipboyColorSelector);
+
+        // Stretch option
+        mStretchLabel = new Text(50, 125, "Stretch screen", 2);
+        addChild(mStretchLabel);
+        mStretchCheckbox = new Image(250, 122,
+                CHECKBOXIMAGES[settings.isScreenStretched() ? 1 : 0], 64, 64);
+        mStretchCheckbox.addClickableListener(new ClickableListener() {
+            @Override
+            public void onClickableEvent(Control source, Object user, boolean secondary) {
+                Settings settings = Settings.getInstance();
+                settings.setScreenStretched(!settings.isScreenStretched());
+            }
+        });
+        mStretchCheckbox.setClickSound("sound/fx/ui/menu/ui_menu_ok.wav");
+        addChild(mStretchCheckbox);
     }
 
     @Override
@@ -60,5 +82,6 @@ public class GraphicsOptions extends Rect {
             mSelectedColorOption = mPipboyColorSelector.getSelectionIndex();
             settings.setPipboyColor(PIPBOYCOLOROPTIONSVALUES[mSelectedColorOption]);
         }
+        mStretchCheckbox.setFile(CHECKBOXIMAGES[settings.isScreenStretched() ? 1 : 0]);
     }
 }

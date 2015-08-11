@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
-import java.util.Objects;
+import nl.robojan.real_pipboy.util.Objects;
 
 import nl.robojan.real_pipboy.Assets;
 import nl.robojan.real_pipboy.Constants;

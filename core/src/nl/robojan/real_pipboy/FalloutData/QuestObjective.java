@@ -2,7 +2,7 @@ package nl.robojan.real_pipboy.FalloutData;
 
 import com.badlogic.gdx.utils.Array;
 
-import java.util.Objects;
+import nl.robojan.real_pipboy.util.Objects;
 
 /**
  * Created by s120330 on 29-7-2015.

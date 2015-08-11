@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 import nl.robojan.real_pipboy.*;
+import nl.robojan.real_pipboy.Connection.ConnectionManager;
 import nl.robojan.real_pipboy.PipBoy.Controls.Control;
 import nl.robojan.real_pipboy.PipBoy.Data.DataMenu;
 import nl.robojan.real_pipboy.PipBoy.Items.InventoryMenu;
@@ -39,6 +40,11 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
     private Matrix4 mProjectionMatrix;
     private InputMultiplexer mInputMultiplexer;
 
+    private float mDisplayWidth = 1;
+    private float mDisplayHeight = 1;
+    private float mDisplayOffsetX = 0;
+    private float mDisplayOffsetY = 0;
+
     private int mLastRendercalls = 0;
 
     public PipBoy() {
@@ -49,7 +55,8 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
         Gdx.input.setInputProcessor(mInputMultiplexer);
 
         createProjectionMatrix(DISPLAY_WIDTH, DISPLAY_HEIGHT,
-                0, -(nl.robojan.real_pipboy.Constants.PIPBOY_HEIGHT - DISPLAY_HEIGHT));
+                0, -(Constants.PIPBOY_HEIGHT - DISPLAY_HEIGHT));
+        mDisplayOffsetY = 0;
 
         // Create the menus
         mPages = new Control[4];
@@ -77,6 +84,9 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
 
     private void createProjectionMatrix(float width, float height, float xOffset, float yOffset)
     {
+        mDisplayWidth = width;
+        mDisplayHeight = height;
+        mDisplayOffsetX = xOffset;
         float xScale = 2.0f/width;
         float yScale = 2.0f/height;
         float xTranslate = xOffset*xScale;
@@ -119,6 +129,30 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
             mTexBackground= Assets.manager.get(TEXTURE_BACKGROUND, Texture.class);
         }
 
+        if(Settings.getInstance().isScreenStretched()) {
+            createProjectionMatrix(DISPLAY_WIDTH, DISPLAY_HEIGHT,
+                    0, -(Constants.PIPBOY_HEIGHT - DISPLAY_HEIGHT));
+            mDisplayOffsetY = 0;
+        } else {
+            float tar = DISPLAY_WIDTH / DISPLAY_HEIGHT;
+            float ar = Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
+            float width, height, x, y;
+            if(ar > tar) {
+                height = DISPLAY_HEIGHT ;
+                width = height * ar;
+                x = (width - DISPLAY_WIDTH) / 2.0f;
+                y = -(Constants.PIPBOY_HEIGHT - height);
+                mDisplayOffsetY = 0;
+            } else {
+                width = DISPLAY_WIDTH;
+                height = width / ar;
+                x = 0;
+                y =  -(Constants.PIPBOY_HEIGHT - height) - (height - DISPLAY_HEIGHT) / 2;
+                mDisplayOffsetY = (height - DISPLAY_HEIGHT) / 2;
+            }
+            createProjectionMatrix(width, height, x, y);
+        }
+
         context.batch.begin();
         context.batch.setProjectionMatrix(mProjectionMatrix);
         context.batch.setShader(context.pipboyShaderProgram);
@@ -130,7 +164,8 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
         // Draw background
         if(mTexBackground != null) {
             context.batch.setColor(1,1,1,1);
-            context.batch.draw(mTexBackground, 0, 0, nl.robojan.real_pipboy.Constants.PIPBOY_WIDTH, nl.robojan.real_pipboy.Constants.PIPBOY_HEIGHT);
+            context.batch.draw(mTexBackground, 0, 0, nl.robojan.real_pipboy.Constants.PIPBOY_WIDTH,
+                    nl.robojan.real_pipboy.Constants.PIPBOY_HEIGHT);
         }
 
         // Draw pipboy
@@ -138,7 +173,8 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
 
         context.batch.end();
         if(mLastRendercalls != context.batch.renderCalls) {
-            Gdx.app.error("RENDER", "Rendercalls: " + context.batch.renderCalls + "fps: " + Gdx.graphics.getFramesPerSecond());
+            Gdx.app.error("RENDER", "Rendercalls: " + context.batch.renderCalls + "fps: " +
+                    Gdx.graphics.getFramesPerSecond());
             mLastRendercalls = context.batch.renderCalls;
         }
 
@@ -157,8 +193,14 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
     }
 
     private Vector2 mapInputToPipboy(float x, float y) {
-        x = x/Gdx.graphics.getWidth() * DISPLAY_WIDTH;
-        y = y/Gdx.graphics.getHeight() * DISPLAY_HEIGHT;
+        x = x/Gdx.graphics.getWidth(); // 0 - 1
+        x *= mDisplayWidth / DISPLAY_WIDTH; // 0 - 1.x
+        x *= DISPLAY_WIDTH; // 0 - 1.x * DisplayWidth
+        x -= mDisplayOffsetX;
+        y = y/Gdx.graphics.getHeight();
+        y *= mDisplayHeight / DISPLAY_HEIGHT;
+        y *= DISPLAY_HEIGHT;
+        y -= mDisplayOffsetY;
         return new Vector2(x,y);
     }
 

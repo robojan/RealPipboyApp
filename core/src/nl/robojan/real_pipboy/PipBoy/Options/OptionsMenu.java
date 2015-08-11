@@ -14,8 +14,7 @@ import nl.robojan.real_pipboy.PipBoy.Controls.Text;
  * Created by s120330 on 13-7-2015.
  */
 public class OptionsMenu extends Control {
-    private final static String[] TABLINE_BUTTONS = new String[] {"Connection", "Graphics",
-            "Sound"};
+    private final static String[] TABLINE_BUTTONS = new String[] {"Connection", "Graphics"};
 
     private float mWidth, mHeight;
 
@@ -43,8 +42,6 @@ public class OptionsMenu extends Control {
                 mHeadlineRect.getWidth(), MM_Tabline.getTop()-mHeadlineRect.getBottom());
         mOptionPages[1] = new GraphicsOptions(mHeadlineRect.getLeft(), mHeadlineRect.getBottom(),
                 mHeadlineRect.getWidth(), MM_Tabline.getTop()-mHeadlineRect.getBottom());
-        mOptionPages[2] = new Text(mWidth /2, mHeight/2, "Not implemented", Align.center,
-                new Color(1,1,1,1));
         addChild(mOptionPages[mCurrentTab]);
     }
 

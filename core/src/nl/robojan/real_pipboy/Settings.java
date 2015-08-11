@@ -19,6 +19,7 @@ public class Settings {
     private Color mPipboyColor = new Color(0.1f, 1.0f, 0.5f, 1.0f);
     private String mHostName = "";
     private int mPort = 28115;
+    private boolean mScreenStretched = false;
 
     private Settings() {
 
@@ -66,6 +67,15 @@ public class Settings {
 
     public void setPort(int port) {
         mPort = port;
+        saveSettings();
+    }
+
+    public boolean isScreenStretched() {
+        return mScreenStretched;
+    }
+
+    public void setScreenStretched(boolean screenStretched) {
+        mScreenStretched = screenStretched;
         saveSettings();
     }
 }

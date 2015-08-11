@@ -1,6 +1,6 @@
 package nl.robojan.real_pipboy.FalloutData;
 
-import java.util.Objects;
+import nl.robojan.real_pipboy.util.Objects;
 
 /**
  * Created by s120330 on 13-7-2015.
