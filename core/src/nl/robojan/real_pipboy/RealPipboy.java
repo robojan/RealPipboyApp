@@ -77,6 +77,8 @@ public class RealPipboy extends ApplicationAdapter {
 		GameString.loadStrings();
         Settings.getInstance().loadSettings();
 
+        Texture.setAssetManager(Assets.manager);
+
 		mPipboy = new PipBoy();
 		mRenderContext = new RenderContext();
 		mRenderContext.batch = new SpriteBatch();
@@ -172,6 +174,7 @@ public class RealPipboy extends ApplicationAdapter {
 	@Override
 	public void pause() {
 		super.pause();
+        mGLStateSet = false;
 	}
 
 	@Override

@@ -53,6 +53,8 @@ public class PipBoy implements Disposable, InputProcessor, GestureListener{
         mInputMultiplexer.addProcessor(gd);
         mInputMultiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(mInputMultiplexer);
+        Gdx.input.setCatchBackKey(true);
+        Gdx.input.setCatchMenuKey(true);
 
         createProjectionMatrix(DISPLAY_WIDTH, DISPLAY_HEIGHT,
                 0, -(Constants.PIPBOY_HEIGHT - DISPLAY_HEIGHT));

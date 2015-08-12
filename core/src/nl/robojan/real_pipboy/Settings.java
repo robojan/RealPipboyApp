@@ -33,6 +33,7 @@ public class Settings {
         }
         mHostName = prefs.getString("HostName");
         mPort = prefs.getInteger("Port", 28115);
+        mScreenStretched = prefs.getBoolean("StretchScreen", false);
     }
 
     public void saveSettings() {
@@ -40,6 +41,7 @@ public class Settings {
         prefs.putInteger("PipboyColor", Color.rgba8888(mPipboyColor));
         prefs.putString("HostName", mHostName);
         prefs.putInteger("Port", mPort);
+        prefs.putBoolean("StretchScreen", mScreenStretched);
         prefs.flush();
     }
 

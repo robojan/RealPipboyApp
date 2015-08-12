@@ -408,13 +408,19 @@ public class FalloutDataTest implements IFalloutData {
     @Override
     public NoteList getNotes() {
         NoteList list = new NoteList();
-        list.add(new Note("Text note", 1, "This is a test note.\r\n It does not contain very " +
-                "Usefull information, but it can be used!!!\r\n\r\n\r\n After a few line breaks\r\n" +
-                "Hsu told me that he'd pay me for taking out Motor-Runner. I can find him at" +
-                " Vault 3, and the NCR will pay well if I'm able to take him out. Hsu also "+
-                "mentioned the last soldier he sent to take care of Motor-Runner has missed his"+
-                " scheduled radio contact.", 0));
-        list.add(new Note("Image note", 2, "textures/load_roulette_wheel.dds", 0));
+        list.add(new Note("Text note", 1, "The quest screen in your Pip-Boy's Data section tracks" +
+                "your progress in every quest you have undertaken. To the left is a list of "+
+                " quests: those with bright text are active; those with darkened text have been "+
+                "completed or somehow failed. Your active quest is marked by a small box. \n" +
+                "\nOn the right-hand side of the screen are the objectives for each quest. " +
+                "The active objectives have bright text and are on the top of the list; the " +
+                "completed or failed objectives have darkened text and are at the bottom of the "+
+                "list. Some objectives are marked as \"(Optional),\" and their completion is "+
+                "not necessary to successfully finishing the quest.\n\nYou can select any quest "+
+                "as the currently \"active\" one, or immediately view the location of the active" +
+                " quest's current target on the World Map (if the location is known). Quest "+
+                "Targets are show on your compass and maps for the active quest only.", 0));
+        list.add(new Note("Image note", 2, "textures/interface/stats/face_00.dds", 0));
         list.add(new Note("Audio note", 3, "UNK", 0));
         return list;
     }
